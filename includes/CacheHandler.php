@@ -113,12 +113,6 @@ class CacheHandler
             return false;
         }
 
-        var_dump([
-            'url' => $query->getURL(),
-            'endpoint' => $query->getEndpoint(),
-            'query' => http_build_query($query->getParameters())
-        ]);
-
         return true;
     }
 
@@ -140,7 +134,7 @@ class CacheHandler
                     'deaths' => $api_result->getResult()->getDeaths(),
                     'joins' => $api_result->getResult()->getJoins(),
                     'leaves' => $api_result->getResult()->getLeaves(),
-                    'adminlevel' => (int)$api_result->getResult()->getAdminStatus(),
+                    'admin' => (int)$api_result->getResult()->getAdminStatus(),
                     'cache_url' => $api_result->getQuery()->getURL(),
                     'cache_endpoint' => $api_result->getQuery()->getEndpoint(),
                     'cache_query' => http_build_query($api_result->getQuery()->getParameters()),
@@ -188,11 +182,34 @@ class CacheHandler
             $statement = $this->database->getConnection()->prepare($query);
             $statement->execute($parameters);
         } catch(PDOException $exception) {
-            die($exception);
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Checks if a query is cached and returns the cached result if it is, else it does a new query.
+     *
+     * @param IOHandler $io_handler
+     * @param ApiQuery $query
+     * @return ApiResult
+     * @throws Exception
+     */
+    public function doQuery(IOHandler &$io_handler, ApiQuery $query) {
+        if($this->isCached($query)) {
+            $result = $this->getCacheResult($query);
+        } else {
+            $result = $io_handler->doQuery($query);
+
+            if($result !== false) {
+                if(!$this->cacheResult($result)) {
+                    throw new Exception("Unable to cache message.");
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**

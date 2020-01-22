@@ -21,8 +21,7 @@ class IOHandler
      * Executes the API request encoded in an ApiQuery object.
      *
      * @param ApiQuery $query
-     * @return ApiResult
-     * @throws HttpException
+     * @return ApiResult|bool
      * @throws Exception
      */
     public function doQuery(ApiQuery $query) {
@@ -43,16 +42,19 @@ class IOHandler
         curl_close($curl);
 
         if(!$result) {
-            // TODO
+            throw new Exception("Unable to connect to external host.");
+        }
 
-            throw new HttpException("Unable to connect to external host.");
+        if($result === "[]") {
+            return false;
         }
 
         switch($endpoint) {
             case 'stats':
-            default:
                 $result_array = json_decode($result, true)[0];
                 return ApiResult::newFromArray($result_array, $query);
+            default:
+                return false;
         }
     }
 

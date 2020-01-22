@@ -25,7 +25,7 @@ class OutputPage
      * @throws Exception
      */
     public function render() {
-        $query = new ApiQuery('https://api.2b2t.dev/', 'stats', ['username' => "Marijn"]);
+        $query = new ApiQuery('https://api.2b2t.dev/', 'stats', ['username' => "Popbob"]);
 
         if($this->cache_handler->isCached($query)) {
             $result = $this->cache_handler->getCacheResult($query);

@@ -51,7 +51,7 @@ class IOHandler
         switch($endpoint) {
             case 'stats':
             default:
-                $result_array = json_decode($result, true);
+                $result_array = json_decode($result, true)[0];
                 return ApiResult::newFromArray($result_array, $query);
         }
     }

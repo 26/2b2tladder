@@ -9,9 +9,9 @@ class CacheHandler
     const LASTKILL_CACHE_TABLE = 'lastkill_cache';
     const LASTDEATH_CACHE_TABLE = 'lastdeath_cache';
 
-    const USER_INSERT_QUERY = "INSERT INTO " . self::USER_CACHE_TABLE . " (`id`, `username`, `uuid`, `kills`, `deaths`, `joins`, `leaves`, `admin`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :uuid, :kills, :deaths, :joins, :leaves, :admin, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
-    const LASTKILL_INSERT_QUERY = "INSERT INTO " . self::LASTKILL_CACHE_TABLE . " (`id`, `username`, `date`, `time`, `message`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :date, :time, :message, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
-    const LASTDEATH_INSERT_QUERY = "INSERT INTO " . self::LASTDEATH_CACHE_TABLE . " (`id`, `username`, `date`, `time`, `message`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :date, :time, :message, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
+    const USER_INSERT_QUERY = "INSERT INTO `" . self::USER_CACHE_TABLE . "` (`id`, `username`, `uuid`, `kills`, `deaths`, `joins`, `leaves`, `adminlevel`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :uuid, :kills, :deaths, :joins, :leaves, :admin, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
+    const LASTKILL_INSERT_QUERY = "INSERT INTO `" . self::LASTKILL_CACHE_TABLE . "` (`id`, `username`, `date`, `time`, `message`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :date, :time, :message, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
+    const LASTDEATH_INSERT_QUERY = "INSERT INTO `" . self::LASTDEATH_CACHE_TABLE . "` (`id`, `username`, `date`, `time`, `message`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :date, :time, :message, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
 
     protected $database;
 
@@ -49,7 +49,7 @@ class CacheHandler
         $table = $this->getTableNameFromType($query->getType());
 
         try {
-            $statement = $this->database->getConnection()->prepare("SELECT `time` FROM `$table` WHERE `url` = :url AND `endpoint` = :endpoint AND `query` = :query");
+            $statement = $this->database->getConnection()->prepare("SELECT `cache_time` FROM `$table` WHERE `cache_url` = :url AND `cache_endpoint` = :endpoint AND `cache_query` = :query");
             $statement->execute([
                 'url' => $query->getURL(),
                 'endpoint' => $query->getEndpoint(),
@@ -59,7 +59,7 @@ class CacheHandler
             return false;
         }
 
-        return ($statement->rowCount() > 0 && $statement->fetch()['time'] + self::CACHE_INVALIDATION_TIME_LIMIT > time());
+        return ($statement->rowCount() > 0 && $statement->fetch()['cache_time'] + self::CACHE_INVALIDATION_TIME_LIMIT > time());
     }
 
     /**
@@ -72,7 +72,7 @@ class CacheHandler
         $type = $query->getType();
         $table = $this->getTableNameFromType($type);
 
-        $statement = $this->database->getConnection()->prepare("SELECT * FROM `$table` WHERE `url` = :url AND `endpoint` = :endpoint AND `query` = :query AND `time` + :cache_time > :current_time");
+        $statement = $this->database->getConnection()->prepare("SELECT * FROM `$table` WHERE `cache_url` = :url AND `cache_endpoint` = :endpoint AND `cache_query` = :query AND `cache_time` + :cache_time > :current_time");
         $statement->execute([
             'url' => $query->getURL(),
             'endpoint' => $query->getEndpoint(),
@@ -103,7 +103,7 @@ class CacheHandler
         $table = $this->getTableNameFromType($query->getType());
 
         try {
-            $statement = $this->database->getConnection()->prepare("DELETE FROM `$table` WHERE `url` = :url AND `endpoint` = :endpoint AND `query` = :query");
+            $statement = $this->database->getConnection()->prepare("DELETE FROM `$table` WHERE `cache_url` = :url AND `cache_endpoint` = :endpoint AND `cache_query` = :query");
             $statement->execute([
                 'url' => $query->getURL(),
                 'endpoint' => $query->getEndpoint(),
@@ -113,6 +113,12 @@ class CacheHandler
             return false;
         }
 
+        var_dump([
+            'url' => $query->getURL(),
+            'endpoint' => $query->getEndpoint(),
+            'query' => http_build_query($query->getParameters())
+        ]);
+
         return true;
     }
 
@@ -121,12 +127,11 @@ class CacheHandler
      * @return bool
      */
     public function cacheResult(ApiResult $api_result) {
-        $result = $api_result->getResult();
         $result_type = $api_result->getQuery()->getType();
 
         switch($result_type) {
             case 'username':
-                $query = self::USER_CACHE_TABLE;
+                $query = self::USER_INSERT_QUERY;
                 $parameters = [
                     'id' => $api_result->getResult()->getID(),
                     'username' => $api_result->getResult()->getUsername(),
@@ -135,16 +140,16 @@ class CacheHandler
                     'deaths' => $api_result->getResult()->getDeaths(),
                     'joins' => $api_result->getResult()->getJoins(),
                     'leaves' => $api_result->getResult()->getLeaves(),
-                    'admin' => $api_result->getResult()->getAdminStatus(),
+                    'adminlevel' => (int)$api_result->getResult()->getAdminStatus(),
                     'cache_url' => $api_result->getQuery()->getURL(),
                     'cache_endpoint' => $api_result->getQuery()->getEndpoint(),
-                    'cache_query' => json_encode($api_result->getQuery()->getParameters()),
+                    'cache_query' => http_build_query($api_result->getQuery()->getParameters()),
                     'cache_time' => time()
                 ];
 
                 break;
             case 'lastkill':
-                $query = self::LASTKILL_CACHE_TABLE;
+                $query = self::LASTKILL_INSERT_QUERY;
                 $parameters = [
                     'id' => $api_result->getResult()->getID(),
                     'username' => $api_result->getResult()->getUsername(),
@@ -153,7 +158,7 @@ class CacheHandler
                     'message' => $api_result->getResult()->getMessage(),
                     'cache_url' => $api_result->getQuery()->getURL(),
                     'cache_endpoint' => $api_result->getQuery()->getEndpoint(),
-                    'cache_query' => json_encode($api_result->getQuery()->getParameters()),
+                    'cache_query' => http_build_query($api_result->getQuery()->getParameters()),
                     'cache_time' => time()
                 ];
 
@@ -168,7 +173,7 @@ class CacheHandler
                     'message' => $api_result->getResult()->getMessage(),
                     'cache_url' => $api_result->getQuery()->getURL(),
                     'cache_endpoint' => $api_result->getQuery()->getEndpoint(),
-                    'cache_query' => json_encode($api_result->getQuery()->getParameters()),
+                    'cache_query' => http_build_query($api_result->getQuery()->getParameters()),
                     'cache_time' => time()
                 ];
 
@@ -183,6 +188,7 @@ class CacheHandler
             $statement = $this->database->getConnection()->prepare($query);
             $statement->execute($parameters);
         } catch(PDOException $exception) {
+            die($exception);
             return false;
         }
 

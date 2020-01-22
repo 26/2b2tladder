@@ -63,15 +63,15 @@ class ApiResult
      * @return bool|LastDeathResult|LastKillResult|UserResult
      */
     private static function createResultObject(array $result, ApiQuery $query) {
-        if(isset($query->getParameters()['username'])) {
+        if($query->getType() === 'username') {
             return ApiResult::createUserFromArray($result);
         }
 
-        if(isset($query->getParameters()['lastdeath'])) {
+        if($query->getType() === 'lastdeath') {
             return ApiResult::createLastDeathFromArray($result);
         }
 
-        if(isset($query->getParameters()['lastkill'])) {
+        if($query->getType() === 'lastkill') {
             return ApiResult::createLastKillFromArray($result);
         }
 
@@ -150,7 +150,7 @@ class ApiResult
            !isset($result['deaths'])    ||
            !isset($result['joins'])     ||
            !isset($result['leaves'])    ||
-           !isset($result['admin']))    {
+           !isset($result['adminlevel']))    {
             return false;
         }
 
@@ -161,7 +161,7 @@ class ApiResult
            !is_int($result['deaths'])       ||
            !is_int($result['joins'])        ||
            !is_int($result['leaves'])       ||
-           !is_bool($result['admin']))      {
+           !is_bool((bool)$result['adminlevel']))      {
             return false;
         }
 
@@ -173,7 +173,7 @@ class ApiResult
             $result['deaths'],
             $result['joins'],
             $result['leaves'],
-            $result['admin']
+            (bool)$result['adminlevel']
         );
     }
 }

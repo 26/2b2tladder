@@ -1,0 +1,70 @@
+body {
+    margin: 0;
+    padding: 0;
+
+    background-color: #222222;
+    font-family: Open Sans, sans-serif;;
+}
+
+.header {
+    width: 100%;
+    background-color: #292b2d;
+    height: 64px;
+
+    -webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.32);
+    -moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.32);
+    box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.32);
+}
+
+.header .logo-header {
+    height: 32px;
+    padding: 16px;
+    display: block;
+    float: left;
+}
+
+.header-inner-wrapper {
+    box-sizing: border-box;
+}
+
+.header-inner-wrapper .menu-link.active,
+.header-inner-wrapper .menu-link:hover {
+    border-bottom: 1px solid white;
+}
+
+.header-inner-wrapper .menu-link.active {
+    color: white;
+}
+
+.header-inner-wrapper .menu-link:hover {
+    color: #cdcdcd;
+}
+
+.menu {
+    float: left;
+    margin: 0;
+}
+
+.menu li {
+    display: inline-block;
+}
+
+.header-inner-wrapper .menu-link {
+    display: inline-block;
+    line-height: 64px;
+    padding: 0 10px;
+    color: #9b9b9b;
+    text-decoration: none;
+    transition: color 0.3s, border-bottom 0.3s;
+}
+
+.wrapper, .header-inner-wrapper {
+    max-width: 1080px;
+    margin: 0 auto;
+}
+
+.wrapper {
+    min-height: 128px;
+    padding: 16px;
+}
+

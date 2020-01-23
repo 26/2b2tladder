@@ -10,6 +10,12 @@ class HtmlRenderer
     const LANGUAGE = 'en';
     const CHARSET = 'UTF-8';
 
+    const CSS_FOLDER = 'css/';
+    const IMAGE_FOLDER = 'images/';
+
+    const STYLESHEET = self::CSS_FOLDER . 'style.css';
+    const LOGO_MAIN = self::IMAGE_FOLDER . 'logo.png';
+
     const DEFAULT_DOCTYPE = 'HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"';
 
     /**
@@ -61,6 +67,14 @@ class HtmlRenderer
                 ['charset' => self::CHARSET]
             ),
             $this->renderTag(
+                'link',
+                ['rel' => 'stylesheet', 'href' => self::STYLESHEET]
+            ),
+            $this->renderTag(
+                'link',
+                ['href' => 'https://fonts.googleapis.com/css?family=Open+Sans&display=swap', 'rel' => 'stylesheet']
+            ),
+            $this->renderTag(
                 'title',
                 [],
                 $this->renderText(
@@ -85,6 +99,28 @@ class HtmlRenderer
             ['lang' => self::LANGUAGE],
             ...$arguments
         );
+    }
+
+    /**
+     * Renders the home page.
+     *
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderHomePage()
+    {
+        $arguments = func_get_args();
+
+        return $this->renderTag(
+            'div',
+            ['class' => 'homepage'],
+            ...$arguments
+        );
+    }
+
+    public function renderHomePageSearch()
+    {
+
     }
 
     /**
@@ -151,13 +187,50 @@ class HtmlRenderer
         return (new Tag())->setTag($tag);
     }
 
+    /**
+     * @return Tag
+     * @throws Exception
+     */
     public function renderHeader()
     {
-        return $this->renderTag(
+        return $this->renderTag( # Main header tag
             "div",
-            ["class" => "header"],
-            $this->renderTag(
-
+            [
+                "class" => "header"
+            ],
+            $this->renderTag( # Header inner-wrapper
+                "div",
+                ["class" => "header-inner-wrapper"],
+                $this->renderTag( # Logo
+                    "img",
+                    [
+                        "src" => self::LOGO_MAIN,
+                        "class" => "logo-header",
+                        "alt" => ""
+                    ]
+                ),
+                $this->renderTag( # Menu
+                    "ul",
+                    [
+                        "class" => "menu"
+                    ],
+                    $this->renderTag(
+                        "li",
+                        [
+                            "class" => "menu-item"
+                        ],
+                        $this->renderTag(
+                            "a",
+                            [
+                                "class" => "menu-link",
+                                "href" => "home"
+                            ],
+                            $this->renderText(
+                                "Home"
+                            )
+                        )
+                    )
+                )
             )
         );
     }

@@ -48,14 +48,14 @@ class OutputPage
      * @throws Exception
      */
     public function render() {
-        $this->leaderboard_handler->loadLeaderboard(LeaderboardHandler::LEADERBOARD_MOST_KILLS); # Load default leaderboard to get displayed
-
         $this->html_renderer->renderPage(
             "2b2t Ladder &bull; 2b2t Leaderboard",
             $this->html_renderer->renderHeader(),
             $this->html_renderer->renderHomePage(
                 $this->html_renderer->renderHomePageSearch(),
-                $this->leaderboard_handler->renderLeaderboard()
+                $this->leaderboard_handler
+                    ->loadLeaderboard(LeaderboardHandler::LEADERBOARD_MOST_KILLS)
+                    ->renderLeaderboard()
             )
         );
     }

@@ -25,6 +25,16 @@ class LeaderboardHandler
     private $html_renderer;
 
     /**
+     * @var DatabaseHandler
+     */
+    private $database;
+
+    /**
+     * @var bool
+     */
+    private $is_loaded = false;
+
+    /**
      * LeaderboardHandler constructor.
      * @param CacheHandler $cache_handler
      * @param IOHandler $io_handler
@@ -37,13 +47,20 @@ class LeaderboardHandler
     /**
      * Loads the leaderboard data.
      * @param $type
+     * @return LeaderboardHandler
      */
     public function loadLeaderboard($type) {
+        if($this->is_loaded) {
+            throw new LogicException('Tried to load leaderboard twice.');
+        }
+
         if(!is_int($type) || $type < self::LEADERBOARD_MOST_KILLS || $type > self::LEADERBOARD_MOST_LEAVES) {
             throw new InvalidArgumentException("Leaderboard type is not valid.");
         }
 
+        $this->database = DatabaseHandler::newFromConfig();
 
+        return $this;
     }
 
     /**

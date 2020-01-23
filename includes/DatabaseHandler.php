@@ -2,6 +2,10 @@
 
 class DatabaseHandler
 {
+    const USER_CACHE_TABLE = 'user_cache';
+    const LASTKILL_CACHE_TABLE = 'lastkill_cache';
+    const LASTDEATH_CACHE_TABLE = 'lastdeath_cache';
+
     /**
      * @var PDO
      */
@@ -50,5 +54,19 @@ class DatabaseHandler
      */
     public function closeConnection() {
         unset($this->connection);
+    }
+
+    public static function newFromConfig() {
+        $config = [];
+        require('/etc/2b2t/config.php');
+
+        $database = $config['db']['database'];
+        $user = $config['db']['user'];
+        $password = $config['db']['pass'];
+        $database_handler = new DatabaseHandler($database, $user, $password, CacheHandler::HOST);
+
+        unset($config);
+
+        return $database_handler;
     }
 }

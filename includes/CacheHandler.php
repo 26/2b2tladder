@@ -5,31 +5,18 @@ class CacheHandler
     const HOST = '127.0.0.1';
     const CACHE_INVALIDATION_TIME_LIMIT = 1800; // 0.5 hours
 
-    const USER_CACHE_TABLE = 'user_cache';
-    const LASTKILL_CACHE_TABLE = 'lastkill_cache';
-    const LASTDEATH_CACHE_TABLE = 'lastdeath_cache';
-
-    const USER_INSERT_QUERY = "INSERT INTO `" . self::USER_CACHE_TABLE . "` (`id`, `username`, `uuid`, `kills`, `deaths`, `joins`, `leaves`, `adminlevel`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :uuid, :kills, :deaths, :joins, :leaves, :admin, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
-    const LASTKILL_INSERT_QUERY = "INSERT INTO `" . self::LASTKILL_CACHE_TABLE . "` (`id`, `username`, `date`, `time`, `message`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :date, :time, :message, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
-    const LASTDEATH_INSERT_QUERY = "INSERT INTO `" . self::LASTDEATH_CACHE_TABLE . "` (`id`, `username`, `date`, `time`, `message`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :date, :time, :message, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
+    const USER_INSERT_QUERY = "INSERT INTO `" . DatabaseHandler::USER_CACHE_TABLE . "` (`id`, `username`, `uuid`, `kills`, `deaths`, `joins`, `leaves`, `adminlevel`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :uuid, :kills, :deaths, :joins, :leaves, :admin, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
+    const LASTKILL_INSERT_QUERY = "INSERT INTO `" . DatabaseHandler::LASTKILL_CACHE_TABLE . "` (`id`, `username`, `date`, `time`, `message`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :date, :time, :message, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
+    const LASTDEATH_INSERT_QUERY = "INSERT INTO `" . DatabaseHandler::LASTDEATH_CACHE_TABLE . "` (`id`, `username`, `date`, `time`, `message`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :date, :time, :message, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
 
     protected $database;
-
-    private $database_name = "tbtt";
-    private $user = "tbtt";
 
     /**
      * CacheHandler constructor.
      */
     public function __construct()
     {
-        $config = [];
-        require('/etc/2b2t/config.php');
-
-        $password = $config['db']['pass'];
-        $this->database = new DatabaseHandler($this->database_name, $this->user, $password, CacheHandler::HOST);
-
-        unset($config);
+        $this->database = DatabaseHandler::newFromConfig();
     }
 
     /**
@@ -219,11 +206,11 @@ class CacheHandler
     private function getTableNameFromType($type) {
         switch($type) {
             case 'username':
-                return self::USER_CACHE_TABLE;
+                return DatabaseHandler::USER_CACHE_TABLE;
             case 'lastkill':
-                return self::LASTKILL_CACHE_TABLE;
+                return DatabaseHandler::LASTKILL_CACHE_TABLE;
             case 'lastdeath':
-                return self::LASTDEATH_CACHE_TABLE;
+                return DatabaseHandler::LASTDEATH_CACHE_TABLE;
             default:
                 throw new LogicException("Invalid type.");
         }

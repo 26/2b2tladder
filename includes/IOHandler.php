@@ -17,6 +17,8 @@ class IOHandler
         "lastdeath"
     ];
 
+    CONST SKIN_API_ENDPOINT = "https://crafatar.com/avatars/";
+
     /**
      * Executes the API request encoded in an ApiQuery object.
      *
@@ -31,19 +33,7 @@ class IOHandler
 
         $request = $url . $endpoint . '?' . http_build_query($parameters);
 
-        $curl = curl_init();
-
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 15);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 15);
-        curl_setopt($curl, CURLOPT_URL, $request);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HEADER, false);
-        $result = curl_exec($curl);
-        curl_close($curl);
-
-        if(!$result) {
-            throw new Exception("Unable to connect to external host.");
-        }
+        $result = $this->doExternalAPIRequest($request);
 
         if($result === "[]") {
             return false;
@@ -56,6 +46,21 @@ class IOHandler
             default:
                 return false;
         }
+    }
+
+    /**
+     * Sends a request to our skins server and returns the result.
+     *
+     * @param $uuid
+     * @return bool|string
+     * @throws Exception
+     */
+    public function doSkinQuery($uuid) {
+        if(!is_string($uuid)) {
+            throw new InvalidArgumentException("UUID should be of type string.");
+        }
+
+        return base64_encode($this->doExternalAPIRequest(self::SKIN_API_ENDPOINT . $uuid));
     }
 
     /**
@@ -104,5 +109,36 @@ class IOHandler
         }
 
         return in_array($endpoint, self::ACCEPTED_ENDPOINTS);
+    }
+
+    /**
+     * @param string $request
+     * @return bool|string
+     * @throws Exception
+     */
+    private function doExternalAPIRequest($request) {
+        if(!is_string($request)) {
+            throw new InvalidArgumentException("Request should be of type string.");
+        }
+
+        if(!filter_var($request, FILTER_VALIDATE_URL)) {
+            throw new InvalidArgumentException("Request should be a valid URL.");
+        }
+
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 15);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 15);
+        curl_setopt($curl, CURLOPT_URL, $request);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        $result = curl_exec($curl);
+        curl_close($curl);
+
+        if(!$result) {
+            throw new Exception("Unable to connect to external host.");
+        }
+
+        return $result;
     }
 }

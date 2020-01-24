@@ -2,9 +2,11 @@
 
 class DatabaseHandler
 {
+    const HOST = '127.0.0.1';
     const USER_CACHE_TABLE = 'user_cache';
     const LASTKILL_CACHE_TABLE = 'lastkill_cache';
     const LASTDEATH_CACHE_TABLE = 'lastdeath_cache';
+    const SKIN_CACHE_TABLE = 'skin_cache';
 
     /**
      * @var PDO
@@ -31,9 +33,10 @@ class DatabaseHandler
 
         $this->connection = new PDO($dsn, $user, $password, $options);
 
-        $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . CacheHandler::USER_CACHE_TABLE . " (`id` INT NOT NULL, `username` VARCHAR(255) NOT NULL, `uuid` VARCHAR(63) NOT NULL, `kills` INT NOT NULL, `deaths` INT NOT NULL, `joins` INT NOT NULL, `leaves` INT NOT NULL, `adminlevel` TINYINT NOT NULL, `cache_url` VARCHAR(255) NOT NULL, `cache_endpoint` VARCHAR(255) NOT NULL, `cache_query` VARCHAR(511) NOT NULL, `cache_time` BIGINT NOT NULL, PRIMARY KEY (id))");
-        $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . CacheHandler::LASTDEATH_CACHE_TABLE . " (`id` INT NOT NULL, `username` VARCHAR(255) NOT NULL, `date` CHAR(10) NOT NULL, `time` CHAR(5) NOT NULL, `message` VARCHAR(255) NOT NULL, `cache_url` VARCHAR(255) NOT NULL, `cache_endpoint` VARCHAR(255) NOT NULL, `cache_query` VARCHAR(511) NOT NULL, `cache_time` BIGINT NOT NULL, PRIMARY KEY (id))");
-        $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . CacheHandler::LASTKILL_CACHE_TABLE . " (`id` INT NOT NULL, `username` VARCHAR(255) NOT NULL, `date` CHAR(10) NOT NULL, `time` CHAR(5) NOT NULL, `message` VARCHAR(255) NOT NULL, `cache_url` VARCHAR(255) NOT NULL, `cache_endpoint` VARCHAR(255) NOT NULL, `cache_query` VARCHAR(511) NOT NULL, `cache_time` BIGINT NOT NULL, PRIMARY KEY (id))");
+        $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::USER_CACHE_TABLE . " (`id` INT NOT NULL, `username` VARCHAR(255) NOT NULL, `uuid` VARCHAR(63) NOT NULL, `kills` INT NOT NULL, `deaths` INT NOT NULL, `joins` INT NOT NULL, `leaves` INT NOT NULL, `adminlevel` TINYINT NOT NULL, `cache_url` VARCHAR(255) NOT NULL, `cache_endpoint` VARCHAR(255) NOT NULL, `cache_query` VARCHAR(511) NOT NULL, `cache_time` BIGINT NOT NULL, PRIMARY KEY (id))");
+        $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::LASTDEATH_CACHE_TABLE . " (`id` INT NOT NULL, `username` VARCHAR(255) NOT NULL, `date` CHAR(10) NOT NULL, `time` CHAR(5) NOT NULL, `message` VARCHAR(255) NOT NULL, `cache_url` VARCHAR(255) NOT NULL, `cache_endpoint` VARCHAR(255) NOT NULL, `cache_query` VARCHAR(511) NOT NULL, `cache_time` BIGINT NOT NULL, PRIMARY KEY (id))");
+        $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::LASTKILL_CACHE_TABLE . " (`id` INT NOT NULL, `username` VARCHAR(255) NOT NULL, `date` CHAR(10) NOT NULL, `time` CHAR(5) NOT NULL, `message` VARCHAR(255) NOT NULL, `cache_url` VARCHAR(255) NOT NULL, `cache_endpoint` VARCHAR(255) NOT NULL, `cache_query` VARCHAR(511) NOT NULL, `cache_time` BIGINT NOT NULL, PRIMARY KEY (id))");
+        $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::SKIN_CACHE_TABLE . " (`uuid` CHAR(64) NOT NULL, `skin` VARCHAR(4096) NOT NULL, `cache_time` BIGINT NOT NULL, PRIMARY KEY (uuid))");
     }
 
     /**
@@ -63,7 +66,8 @@ class DatabaseHandler
         $database = $config['db']['database'];
         $user = $config['db']['user'];
         $password = $config['db']['pass'];
-        $database_handler = new DatabaseHandler($database, $user, $password, CacheHandler::HOST);
+
+        $database_handler = new DatabaseHandler($database, $user, $password, self::HOST);
 
         unset($config);
 

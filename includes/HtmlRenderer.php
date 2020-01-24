@@ -16,12 +16,13 @@ class HtmlRenderer
     const STYLESHEET = self::CSS_FOLDER . 'style.css';
     const LOGO_MAIN = self::IMAGE_FOLDER . 'logo.png';
 
+    const DEFAULT_SKIN_URL = ''; // TODO
     const DEFAULT_DOCTYPE = 'HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"';
 
     /**
      * @throws Exception
      */
-    public function renderPage() {
+    public function outputPage() {
         $arguments = func_get_args();
 
         echo $this->renderDoctype();
@@ -85,6 +86,28 @@ class HtmlRenderer
     }
 
     /**
+     * @param $skin_base64
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderSkin($skin_base64) {
+        if(!base64_decode($skin_base64)) {
+            $skin = self::DEFAULT_SKIN_URL;
+        } else {
+            $skin = "data:image/png;base64," . $skin_base64;
+        }
+
+        return $this->renderTag(
+            'img',
+            [
+                'class' => 'skin-image',
+                'src' => $skin,
+                'alt' => ''
+            ]
+        );
+    }
+
+    /**
      * Renders the body.
      *
      * @return string
@@ -97,6 +120,23 @@ class HtmlRenderer
         return $this->renderTag(
             'body',
             ['lang' => self::LANGUAGE],
+            ...$arguments
+        );
+    }
+
+    /**
+     * Renders the arguments inside the wrapper class.
+     *
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderWrapper()
+    {
+        $arguments = func_get_args();
+
+        return $this->renderTag(
+            'div',
+            ['class' => 'wrapper'],
             ...$arguments
         );
     }
@@ -118,9 +158,99 @@ class HtmlRenderer
         );
     }
 
+    /**
+     * Renders the home page search.
+     * @throws Exception
+     */
     public function renderHomePageSearch()
     {
+        return $this->renderTag(
+            'div',
+            ['class' => 'search-main'],
+            $this->renderTag(
+                'div',
+                ['class' => 'search-form-wrapper'],
+                $this->renderTag(
+                    'h1',
+                    [],
+                    $this->renderText("Search user")
+                ),
+                $this->renderForm(
+                    [
+                        'class'  => 'search-form',
+                        'method' => 'POST',
+                        'action' => '/search'
+                    ],
+                    $this->renderInput(
+                        'text',
+                        [
+                            'class' => 'search-box',
+                            'id' => 'search-box',
+                            'placeholder' => 'Search user'
+                        ]
+                    )
+                ),
+                $this->renderTag(
+                    'div',
+                    ['class' => 'search-suggestions'],
+                    $this->renderTag(
+                        'p',
+                        [],
+                        $this->renderText("You can search for:")
+                    ),
+                    $this->renderTag(
+                        'ul',
+                        [],
+                        $this->renderTag(
+                            'li',
+                            [],
+                            $this->renderText(
+                                'Minecraft username'
+                            )
+                        ),
+                        $this->renderTag(
+                            'li',
+                            [],
+                            $this->renderText(
+                                'Minecraft UUID'
+                            )
+                        )
+                    )
+                )
+            )
+        );
+    }
 
+    /**
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderForm()
+    {
+        $arguments = func_get_args();
+        $attributes = array_shift($arguments);
+
+        return $this->renderTag(
+            'form',
+            $attributes,
+            ...$arguments
+        );
+    }
+
+    /**
+     * Renders an input tag.
+     *
+     * @param $input_type
+     * @param array $attributes
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderInput($input_type, array $attributes)
+    {
+        return $this->renderTag(
+            'input',
+            array_merge(['type' => $input_type], $attributes)
+        );
     }
 
     /**

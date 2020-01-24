@@ -2,6 +2,8 @@
 
 class OutputPage
 {
+    const DEBUG = true;
+
     /**
      * @var CacheHandler
      */
@@ -31,6 +33,8 @@ class OutputPage
         try {
             $this->html_renderer = new HtmlRenderer();
         } catch(Exception $e) {
+            http_response_code(500);
+
             // I should probably make this more user-friendly.
             die("Unable to load page... Please reload.");
         }
@@ -40,6 +44,10 @@ class OutputPage
             $this->io_handler = new IOHandler();
             $this->leaderboard_handler = new LeaderboardHandler($this->cache_handler, $this->io_handler);
         } catch(Exception $e) {
+            if(self::DEBUG) {
+                die(nl2br($e));
+            }
+
             $this->renderError(500, "Something went wrong while trying to load this page.");
         }
     }
@@ -48,16 +56,26 @@ class OutputPage
      * @throws Exception
      */
     public function render() {
-        $this->html_renderer->renderPage(
-            "2b2t Ladder &bull; 2b2t Leaderboard",
-            $this->html_renderer->renderHeader(),
-            $this->html_renderer->renderHomePage(
-                $this->html_renderer->renderHomePageSearch(),
-                $this->leaderboard_handler
-                    ->loadLeaderboard(LeaderboardHandler::LEADERBOARD_MOST_KILLS)
-                    ->renderLeaderboard()
-            )
-        );
+        try {
+            $this->html_renderer->outputPage(
+                "2b2t Ladder • Leaderboard",
+                $this->html_renderer->renderHeader(),
+                $this->html_renderer->renderHomePage(
+                    $this->html_renderer->renderHomePageSearch(),
+                    $this->html_renderer->renderWrapper(
+                        $this->leaderboard_handler
+                            ->loadLeaderboard(LeaderboardHandler::LEADERBOARD_MOST_LEAVES)
+                            ->renderLeaderboard()
+                    )
+                )
+            );
+        } catch(Exception $e) {
+            if(self::DEBUG) {
+                die(nl2br($e));
+            }
+
+            $this->renderError(500, "Something went wrong while trying to load this page.");
+        }
     }
 
     /**
@@ -70,6 +88,9 @@ class OutputPage
             throw new InvalidArgumentException();
         }
 
+        http_response_code($code);
+
+        /*
         $this->html_renderer->renderPage( // Render default page
             $message, // The title of the page
             $this->html_renderer->renderHeader(), // Default header
@@ -79,6 +100,7 @@ class OutputPage
             ),
             $this->html_renderer->renderFooter() // Default footer
         );
+        */
 
         die();
     }

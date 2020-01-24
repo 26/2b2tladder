@@ -2,7 +2,6 @@
 
 class CacheHandler
 {
-    const HOST = '127.0.0.1';
     const CACHE_INVALIDATION_TIME_LIMIT = 1800; // 0.5 hours
 
     const USER_INSERT_QUERY = "INSERT INTO `" . DatabaseHandler::USER_CACHE_TABLE . "` (`id`, `username`, `uuid`, `kills`, `deaths`, `joins`, `leaves`, `adminlevel`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :uuid, :kills, :deaths, :joins, :leaves, :admin, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
@@ -11,12 +10,15 @@ class CacheHandler
 
     protected $database;
 
+    private $io_handler;
+
     /**
      * CacheHandler constructor.
      */
     public function __construct()
     {
         $this->database = DatabaseHandler::newFromConfig();
+        $this->io_handler = new IOHandler();
     }
 
     /**
@@ -197,6 +199,145 @@ class CacheHandler
         }
 
         return $result;
+    }
+
+    /**
+     * Checks if a skin has ever been cached.
+     *
+     * Skin caching and fetching is very expensive. If the skin has been cached ever, use that. A skin cache is only updated when a profile with an outdated skin gets visited.
+     *
+     * @param $uuid
+     * @return bool
+     */
+    public function isSkinCached($uuid) {
+        if(!is_string($uuid)) {
+            throw new InvalidArgumentException("UUID must be of type string.");
+        }
+
+        try {
+            $statement = $this->database->getConnection()->prepare("SELECT * FROM " . DatabaseHandler::SKIN_CACHE_TABLE . " WHERE `uuid` = ?");
+            $statement->execute([$uuid]);
+        } catch(Exception $e) {
+            return false;
+        }
+
+        return ($statement->rowCount() > 0);
+    }
+
+    /**
+     * @param $uuid
+     * @return bool|int
+     */
+    public function skinCachedFor($uuid) {
+        if(!is_string($uuid)) {
+            throw new InvalidArgumentException("UUID must be of type string.");
+        }
+
+        try {
+            $statement = $this->database->getConnection()->prepare("SELECT cache_time FROM " . DatabaseHandler::SKIN_CACHE_TABLE . " WHERE `uuid` = ?");
+            $statement->execute([$uuid]);
+        } catch(Exception $e) {
+            return false;
+        }
+
+        if($statement->rowCount() === 0) return -1;
+
+        return ($statement->fetch()['cache_time'] - time());
+    }
+
+    /**
+     * @param $uuid
+     * @param $skin_base64
+     * @return bool
+     */
+    public function cacheSkin($uuid, $skin_base64) {
+        if(!is_string($uuid)) {
+            throw new InvalidArgumentException("UUID must be of type string.");
+        }
+
+        if(!is_string($skin_base64) || !base64_decode($skin_base64)) {
+            throw new InvalidArgumentException("Skin must be of type string (base64).");
+        }
+
+        try {
+            $statement = $this->database->getConnection()->prepare("INSERT INTO " . DatabaseHandler::SKIN_CACHE_TABLE . " (`uuid`, `skin`, `cache_time`) VALUES (?, ?, ?)");
+            $statement->execute([$uuid, $skin_base64, time()]);
+        } catch(Exception $e) {
+            die($e);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $uuid
+     * @return bool|mixed
+     */
+    public function getCachedSkin($uuid) {
+        try {
+            $statement = $this->database->getConnection()->prepare("SELECT * FROM `" . DatabaseHandler::SKIN_CACHE_TABLE . "` WHERE `uuid` = :uuid");
+            $statement->execute([
+                'uuid' => $uuid
+            ]);
+
+            if($statement->rowCount() < 1) {
+                throw new LogicException("Tried to get non-existent cache result.");
+            }
+        } catch(Exception $e) {
+            return false;
+        }
+
+        return $statement->fetch();
+    }
+
+    /**
+     * @param $uuid
+     * @return bool
+     */
+    public function clearCacheSkin($uuid) {
+        if(!is_string($uuid)) {
+            throw new InvalidArgumentException("UUID must be of type string.");
+        }
+
+        try {
+            $statement = $this->database->getConnection()->prepare("DELETE FROM " . DatabaseHandler::SKIN_CACHE_TABLE . " WHERE `uuid` = ?");
+            $statement->execute([$uuid]);
+        } catch(Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $uuid
+     * @return bool|mixed
+     * @throws Exception
+     */
+    public function loadSkin($uuid) {
+        if(!is_string($uuid)) {
+            throw new InvalidArgumentException("UUID must be of type string.");
+        }
+
+        $uuid = str_replace("-", "", $uuid);
+
+        if($this->isSkinCached($uuid)) {
+            $result = $this->getCachedSkin($uuid);
+
+            if(!$result) return HtmlRenderer::DEFAULT_SKIN_URL;
+            return $result['skin'];
+        } else {
+            $result = $this->io_handler->doSkinQuery($uuid);
+
+            if(!$result) {
+                return HtmlRenderer::DEFAULT_SKIN_URL;
+            }
+
+            $this->clearCacheSkin($uuid);
+            $this->cacheSkin($uuid, $result);
+            return $result;
+        }
     }
 
     /**

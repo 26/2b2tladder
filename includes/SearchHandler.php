@@ -158,7 +158,7 @@ class SearchHandler
             $rows[] = $this->html_renderer->renderTag(
                 'tr',
                 [
-                    'class' => 'search-item',
+                    'class' => 'userpage search-item',
                     'data-username' => $row['username']
                 ],
                 $this->html_renderer->renderTag(
@@ -204,12 +204,33 @@ class SearchHandler
     private function performSearch($search_term) {
         // TODO: Improve search
 
-        $statement = $this->database->getConnection()->prepare("SELECT uuid, username FROM " . DatabaseHandler::USER_CACHE_TABLE . " WHERE `username` LIKE ? OR `uuid` LIKE ? LIMIT " . self::SEARCH_LIMIT);
+        $statement = $this->database->getConnection()->prepare("SELECT uuid, username FROM " . DatabaseHandler::USER_CACHE_TABLE . " WHERE `username` LIKE ? OR `uuid` = ? OR `uuid` = ? LIMIT " . self::SEARCH_LIMIT);
         $statement->execute([
             '%' . $search_term . '%',
-            '%' . $search_term . '%'
+            $search_term,
+            $this->untrimUUID($search_term)
         ]);
 
         return $statement->fetchAll();
+    }
+
+    /**
+     * Untrims a given UUID if it is valid.
+     *
+     * @param $search_term
+     * @return mixed
+     */
+    private function untrimUUID($search_term) {
+        if(strlen($search_term) !== 32) {
+            return $search_term;
+        }
+
+        $uuid_parts[] = substr($search_term, 0, 8);
+        $uuid_parts[] = substr($search_term, 8, 4);
+        $uuid_parts[] = substr($search_term, 12, 4);
+        $uuid_parts[] = substr($search_term, 16, 4);
+        $uuid_parts[] = substr($search_term, 20, 12);
+
+        return implode('-', $uuid_parts);
     }
 }

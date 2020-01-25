@@ -209,7 +209,7 @@ class LeaderboardHandler
             $rows[] = $this->html_renderer->renderTag(
                 'tr',
                 [
-                    'class' => 'leaderboard-item',
+                    'class' => 'userpage leaderboard-item',
                     'data-username' => $row['username']
                 ],
                 $this->html_renderer->renderTag(

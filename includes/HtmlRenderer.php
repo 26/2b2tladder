@@ -420,7 +420,7 @@ class HtmlRenderer
                 "a",
                 [
                     "class" => $this->getMenuLinkClasses("home", $active),
-                    "href" => "home"
+                    "href" => "/"
                 ],
                 $this->renderText(
                     "Home"

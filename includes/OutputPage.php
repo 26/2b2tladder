@@ -58,7 +58,19 @@ class OutputPage
     public function render() {
         $uri = $_SERVER['REQUEST_URI'];
 
+        $uri_parts = explode('/', trim($uri, '/'));
+
         try {
+            if($uri_parts[0] === 'profile') {
+                if(count($uri_parts) > 2 || !isset($uri_parts[1]) || !ctype_alnum($uri_parts[1])) {
+                    $this->renderError(400, "Invalid profile name");
+                }
+
+                (new UserPage())->loadUserPage($uri_parts[1])->render();
+
+                return;
+            }
+
             switch($uri) {
                 case '/':
                 case '/home':
@@ -75,7 +87,8 @@ class OutputPage
                             )
                         )
                     );
-                    break;
+
+                    return;
                 case '/search':
                     $search_handler = new SearchHandler();
 
@@ -99,7 +112,8 @@ class OutputPage
                             )
                         )
                     );
-                    break;
+
+                    return;
                 case '/ladder/kills':
                     $this->html_renderer->outputPage(
                         "2b2t Ladder • Most kills",
@@ -114,10 +128,11 @@ class OutputPage
                                 ->renderLeaderboard()
                         )
                     );
-                    break;
+
+                    return;
                 case '/ladder/deaths':
                     $this->html_renderer->outputPage(
-                        "2b2t Ladder • Most kills",
+                        "2b2t Ladder • Most deaths",
                         $this->html_renderer->renderHeader(),
                         $this->html_renderer->renderWrapper(
                             $this->html_renderer->renderTag(
@@ -129,10 +144,11 @@ class OutputPage
                                 ->renderLeaderboard()
                         )
                     );
-                    break;
+
+                    return;
                 case '/ladder/joins':
                     $this->html_renderer->outputPage(
-                        "2b2t Ladder • Most kills",
+                        "2b2t Ladder • Most joins",
                         $this->html_renderer->renderHeader(),
                         $this->html_renderer->renderWrapper(
                             $this->html_renderer->renderTag(
@@ -144,10 +160,11 @@ class OutputPage
                                 ->renderLeaderboard()
                         )
                     );
-                    break;
+
+                    return;
                 case '/ladder/leaves':
                     $this->html_renderer->outputPage(
-                        "2b2t Ladder • Most kills",
+                        "2b2t Ladder • Most leaves",
                         $this->html_renderer->renderHeader(),
                         $this->html_renderer->renderWrapper(
                             $this->html_renderer->renderTag(
@@ -159,7 +176,10 @@ class OutputPage
                                 ->renderLeaderboard()
                         )
                     );
-                    break;
+
+                    return;
+                default:
+                    $this->renderError(404, "Page not found.");
             }
         } catch(Exception $e) {
             if(self::DEBUG) {

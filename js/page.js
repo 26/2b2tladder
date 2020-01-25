@@ -19,4 +19,10 @@ $(function() {
             $(this).removeClass('visible');
         }
     });
+
+    $(".userpage").click(function() {
+       let username = $(this).data('username');
+
+       window.location = "/profile/" + username;
+    });
 });

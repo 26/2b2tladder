@@ -11,7 +11,7 @@ class ApiResult
     private $query;
 
     /**
-     * @var UserResult|LastKillResult|LastDeathResult
+     * @var Result
      */
     private $result;
 
@@ -22,7 +22,7 @@ class ApiResult
     }
 
     /**
-     * @return LastDeathResult|LastKillResult|UserResult
+     * @return Result
      */
     public function getResult() {
         return $this->result;
@@ -60,7 +60,7 @@ class ApiResult
     /**
      * @param array $result
      * @param ApiQuery $query
-     * @return bool|LastDeathResult|LastKillResult|UserResult
+     * @return bool|Result
      */
     private static function createResultObject(array $result, ApiQuery $query) {
         if($query->getType() === 'username') {
@@ -75,7 +75,32 @@ class ApiResult
             return ApiResult::createLastKillFromArray($result);
         }
 
-        throw new LogicException("Invalid parameter supplied.");
+        if($query->getType() === 'usersonline') {
+            return ApiResult::createUsersOnlineFromArray($result);
+        }
+
+        throw new InvalidArgumentException("Type was not understood.");
+    }
+
+    /**
+     * @param array $result
+     * @return bool|UsersOnlineResult
+     */
+    private static function createUsersOnlineFromArray(array $result) {
+        if(!isset($result['max'])        ||
+            !isset($result['now']))  {
+            return false;
+        }
+
+        if(!is_int($result['max']) ||
+           !is_int($result['now'])) {
+            return false;
+        }
+
+        return new UsersOnlineResult(
+            $result['max'],
+            $result['now']
+        );
     }
 
     /**

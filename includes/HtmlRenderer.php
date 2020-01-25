@@ -10,8 +10,9 @@ class HtmlRenderer
     const LANGUAGE = 'en';
     const CHARSET = 'UTF-8';
 
-    const CSS_FOLDER = 'css/';
-    const IMAGE_FOLDER = 'images/';
+    const CSS_FOLDER = '/css/';
+    const IMAGE_FOLDER = '/images/';
+    const JAVASCRIPT_FOLDER = '/js/';
 
     const STYLESHEET = self::CSS_FOLDER . 'style.css';
     const LOGO_MAIN = self::IMAGE_FOLDER . 'logo.png';
@@ -67,6 +68,14 @@ class HtmlRenderer
                 'meta',
                 ['charset' => self::CHARSET]
             ),
+            $this->renderEmptyTag(
+                'script',
+                [
+                    'src' => 'https://code.jquery.com/jquery-3.4.1.min.js',
+                    'integrity' => 'sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=',
+                    'crossorigin' => 'anonymous'
+                ]
+            ),
             $this->renderTag(
                 'link',
                 ['rel' => 'stylesheet', 'href' => self::STYLESHEET]
@@ -74,6 +83,14 @@ class HtmlRenderer
             $this->renderTag(
                 'link',
                 ['href' => 'https://fonts.googleapis.com/css?family=Open+Sans&display=swap', 'rel' => 'stylesheet']
+            ),
+            $this->renderTag(
+                'link',
+                ['href' => '/lib/fontawesome/css/all.css', 'rel' => 'stylesheet']
+            ),
+            $this->renderEmptyTag(
+                'script',
+                ['src' => self::JAVASCRIPT_FOLDER . 'page.js', 'type' => 'text/javascript']
             ),
             $this->renderTag(
                 'title',
@@ -186,8 +203,17 @@ class HtmlRenderer
                         [
                             'class' => 'search-box',
                             'id' => 'search-box',
-                            'placeholder' => 'Search user'
+                            'placeholder' => 'Search user',
+                            'name' => 'search'
                         ]
+                    )
+                ),
+                $this->renderTag(
+                    'div',
+                    ['class' => 'return-icon'],
+                    $this->renderTag(
+                        'img',
+                        ['src' => self::IMAGE_FOLDER . 'icons8-enter-key-30.png', 'alt' => '']
                     )
                 ),
                 $this->renderTag(
@@ -265,7 +291,8 @@ class HtmlRenderer
      * Safely renders some text.
      *
      * @param $text
-     * @return string
+     * @return Tag
+     * @throws Exception
      */
     public function renderText($text)
     {
@@ -274,6 +301,28 @@ class HtmlRenderer
         }
 
         return (new Tag())->setTag(htmlspecialchars($text));
+    }
+
+    /**
+     * @param $tag_name
+     * @param array $attributes
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderEmptyTag($tag_name, array $attributes) {
+        if(!is_string($tag_name) || !ctype_alnum($tag_name) || !is_array($attributes)) {
+            throw new InvalidArgumentException();
+        }
+
+        $tag = '<' . $tag_name;
+
+        foreach($attributes as $attribute_name => $attribute) {
+            $tag .= ' ' . htmlspecialchars($attribute_name) . '="' . htmlspecialchars($attribute) . '"';
+        }
+
+        $tag .= '></' . $tag_name . '>';
+
+        return (new Tag())->setTag($tag);
     }
 
     /**
@@ -321,7 +370,7 @@ class HtmlRenderer
      * @return Tag
      * @throws Exception
      */
-    public function renderHeader()
+    public function renderHeader($active = null)
     {
         return $this->renderTag( # Main header tag
             "div",
@@ -331,37 +380,157 @@ class HtmlRenderer
             $this->renderTag( # Header inner-wrapper
                 "div",
                 ["class" => "header-inner-wrapper"],
-                $this->renderTag( # Logo
-                    "img",
-                    [
-                        "src" => self::LOGO_MAIN,
-                        "class" => "logo-header",
-                        "alt" => ""
-                    ]
+                $this->renderTag(
+                    'a',
+                    ['href' => '/'],
+                    $this->renderTag( # Logo
+                        "img",
+                        [
+                            "src" => self::LOGO_MAIN,
+                            "class" => "logo-header",
+                            "alt" => ""
+                        ]
+                    )
                 ),
                 $this->renderTag( # Menu
                     "ul",
                     [
                         "class" => "menu"
                     ],
+                    ...$this->renderMenuLinks($active)
+                )
+            )
+        );
+    }
+
+    /**
+     * @param null $active
+     * @return array
+     * @throws Exception
+     */
+    private function renderMenuLinks($active = null) {
+        $links = [];
+
+        $links[] = $this->renderTag(
+            "li",
+            [
+                "class" => "menu-item"
+            ],
+            $this->renderTag(
+                "a",
+                [
+                    "class" => $this->getMenuLinkClasses("home", $active),
+                    "href" => "home"
+                ],
+                $this->renderText(
+                    "Home"
+                )
+            )
+        );
+
+        $links[] = $this->renderTag(
+            "li",
+            [
+                "class" => "menu-item"
+            ],
+            $this->renderTag(
+                "a",
+                [
+                    "class" => "dropdown " . $this->getMenuLinkClasses("leaderboards", $active),
+                    "href" => "#"
+                ],
+                $this->renderText(
+                    "Leaderboards"
+                ),
+                $this->renderTag(
+                    "span",
+                    ["class" => "dropdown-icon fas fa-sort-down"]
+                )
+            ),
+            $this->renderTag(
+                "div",
+                [
+                    "class" => "dropdown-menu"
+                ],
+                $this->renderTag(
+                    'ul',
+                    [],
                     $this->renderTag(
-                        "li",
-                        [
-                            "class" => "menu-item"
-                        ],
+                        'li',
+                        [],
                         $this->renderTag(
-                            "a",
-                            [
-                                "class" => "menu-link",
-                                "href" => "home"
-                            ],
+                            'a',
+                            ['class' => 'dropdown-link', 'href' => '/ladder/kills'],
                             $this->renderText(
-                                "Home"
+                                'Most kills'
+                            )
+                        )
+                    ),
+                    $this->renderTag(
+                        'li',
+                        [],
+                        $this->renderTag(
+                            'a',
+                            ['class' => 'dropdown-link', 'href' => '/ladder/deaths'],
+                            $this->renderText(
+                                'Most deaths'
+                            )
+                        )
+                    ),
+                    $this->renderTag(
+                        'li',
+                        [],
+                        $this->renderTag(
+                            'a',
+                            ['class' => 'dropdown-link', 'href' => '/ladder/joins'],
+                            $this->renderText(
+                                'Most joins'
+                            )
+                        )
+                    ),
+                    $this->renderTag(
+                        'li',
+                        [],
+                        $this->renderTag(
+                            'a',
+                            ['class' => 'dropdown-link', 'href' => '/ladder/leaves'],
+                            $this->renderText(
+                                'Most leaves'
                             )
                         )
                     )
                 )
             )
         );
+
+        return $links;
+    }
+
+    /**
+     * @param Tag $title
+     * @param Tag $table
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderSearch(Tag $title, Tag $table) {
+        return $this->renderTag(
+            'div',
+            ['class' => 'search container'],
+            $this->renderTag(
+                'h1',
+                [],
+                $title
+            ),
+            $table
+        );
+    }
+
+    private function getMenuLinkClasses($link, $active = null)
+    {
+        if($link === $active) {
+            return "menu-link active";
+        } else {
+            return "menu-link";
+        }
     }
 }

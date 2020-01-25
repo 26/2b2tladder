@@ -5,7 +5,8 @@ class ApiQuery
     const ACCEPTED_QUERY_TYPES = [
         "username",
         "lastdeath",
-        "lastkill"
+        "lastkill",
+        "usersonline"
     ];
 
     private $endpoint = '';

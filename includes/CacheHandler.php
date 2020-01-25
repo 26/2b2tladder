@@ -7,6 +7,7 @@ class CacheHandler
     const USER_INSERT_QUERY = "INSERT INTO `" . DatabaseHandler::USER_CACHE_TABLE . "` (`id`, `username`, `uuid`, `kills`, `deaths`, `joins`, `leaves`, `adminlevel`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :uuid, :kills, :deaths, :joins, :leaves, :admin, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
     const LASTKILL_INSERT_QUERY = "INSERT INTO `" . DatabaseHandler::LASTKILL_CACHE_TABLE . "` (`id`, `username`, `date`, `time`, `message`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :date, :time, :message, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
     const LASTDEATH_INSERT_QUERY = "INSERT INTO `" . DatabaseHandler::LASTDEATH_CACHE_TABLE . "` (`id`, `username`, `date`, `time`, `message`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:id, :username, :date, :time, :message, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
+    const USERSONLINE_INSERT_QUERY = "INSERT INTO `" . DatabaseHandler::USERSONLINE_CACHE_TABLE . "` (`max`, `now`, `cache_url`, `cache_endpoint`, `cache_query`, `cache_time`) VALUES (:max, :now, :cache_url, :cache_endpoint, :cache_query, :cache_time)";
 
     protected $database;
 
@@ -161,6 +162,18 @@ class CacheHandler
                 ];
 
                 break;
+            case 'usersonline':
+                $query = self::USERSONLINE_INSERT_QUERY;
+                $parameters = [
+                    'max' => $api_result->getResult()->getMax(),
+                    'now' => $api_result->getResult()->getNow(),
+                    'cache_url' => $api_result->getQuery()->getURL(),
+                    'cache_endpoint' => $api_result->getQuery()->getEndpoint(),
+                    'cache_query' => http_build_query($api_result->getQuery()->getParameters()),
+                    'cache_time' => time()
+                ];
+
+                break;
             default:
                 throw new LogicException("Invalid type.");
         }
@@ -193,7 +206,7 @@ class CacheHandler
 
             if($result !== false) {
                 if(!$this->cacheResult($result)) {
-                    throw new Exception("Unable to cache message.");
+                    throw new Exception("Unable to cache result.");
                 }
             }
         }
@@ -225,6 +238,8 @@ class CacheHandler
     }
 
     /**
+     * Returns how long a skin has been cached for.
+     *
      * @param $uuid
      * @return bool|int
      */
@@ -246,6 +261,8 @@ class CacheHandler
     }
 
     /**
+     * Caches a base64 encoded skin.
+     *
      * @param $uuid
      * @param $skin_base64
      * @return bool
@@ -263,7 +280,6 @@ class CacheHandler
             $statement = $this->database->getConnection()->prepare("INSERT INTO " . DatabaseHandler::SKIN_CACHE_TABLE . " (`uuid`, `skin`, `cache_time`) VALUES (?, ?, ?)");
             $statement->execute([$uuid, $skin_base64, time()]);
         } catch(Exception $e) {
-            die($e);
             return false;
         }
 
@@ -271,6 +287,8 @@ class CacheHandler
     }
 
     /**
+     * Returns the base64 encoded string of the cached skin.
+     *
      * @param $uuid
      * @return bool|mixed
      */
@@ -328,7 +346,7 @@ class CacheHandler
             if(!$result) return HtmlRenderer::DEFAULT_SKIN_URL;
             return $result['skin'];
         } else {
-            $result = $this->io_handler->doSkinQuery($uuid);
+            $result = $this->io_handler->getSkinAsBase64($uuid);
 
             if(!$result) {
                 return HtmlRenderer::DEFAULT_SKIN_URL;
@@ -352,6 +370,8 @@ class CacheHandler
                 return DatabaseHandler::LASTKILL_CACHE_TABLE;
             case 'lastdeath':
                 return DatabaseHandler::LASTDEATH_CACHE_TABLE;
+            case 'usersonline':
+                return DatabaseHandler::USERSONLINE_CACHE_TABLE;
             default:
                 throw new LogicException("Invalid type.");
         }

@@ -1,6 +1,6 @@
 <?php
 
-class LastDeathResult
+class LastDeathResult implements Result
 {
     /**
      * @var int

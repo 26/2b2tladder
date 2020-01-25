@@ -56,19 +56,111 @@ class OutputPage
      * @throws Exception
      */
     public function render() {
+        $uri = $_SERVER['REQUEST_URI'];
+
         try {
-            $this->html_renderer->outputPage(
-                "2b2t Ladder • Leaderboard",
-                $this->html_renderer->renderHeader(),
-                $this->html_renderer->renderHomePage(
-                    $this->html_renderer->renderHomePageSearch(),
-                    $this->html_renderer->renderWrapper(
-                        $this->leaderboard_handler
-                            ->loadLeaderboard(LeaderboardHandler::LEADERBOARD_MOST_LEAVES)
-                            ->renderLeaderboard()
-                    )
-                )
-            );
+            switch($uri) {
+                case '/':
+                case '/home':
+                    $this->html_renderer->outputPage(
+                        "2b2t Ladder • Leaderboard",
+                        $this->html_renderer->renderHeader("home"),
+                        $this->html_renderer->renderHomePage(
+                            $this->html_renderer->renderHomePageSearch(),
+                            $this->html_renderer->renderWrapper(
+                                $this->renderStats(),
+                                $this->leaderboard_handler
+                                    ->loadLeaderboard(LeaderboardHandler::LEADERBOARD_MOST_KILLS)
+                                    ->renderLeaderboard()
+                            )
+                        )
+                    );
+                    break;
+                case '/search':
+                    $search_handler = new SearchHandler();
+
+                    if(!isset($_POST['search'])) {
+                        $search_term = '';
+                    } else {
+                        $search_term = $_POST['search'];
+                    }
+
+                    $this->html_renderer->outputPage(
+                        "2b2t Ladder • Search results",
+                        $this->html_renderer->renderHeader(),
+                        $this->html_renderer->renderWrapper(
+                            $this->html_renderer->renderSearch(
+                                $this->html_renderer->renderText(
+                                    "Search results for '" . $search_term . "'"
+                                ),
+                                $search_handler
+                                    ->doSearch($search_term)
+                                    ->renderSearch()
+                            )
+                        )
+                    );
+                    break;
+                case '/ladder/kills':
+                    $this->html_renderer->outputPage(
+                        "2b2t Ladder • Most kills",
+                        $this->html_renderer->renderHeader(),
+                        $this->html_renderer->renderWrapper(
+                            $this->html_renderer->renderTag(
+                                'br',
+                                []
+                            ),
+                            $this->leaderboard_handler
+                                ->loadLeaderboard(LeaderboardHandler::LEADERBOARD_MOST_KILLS)
+                                ->renderLeaderboard()
+                        )
+                    );
+                    break;
+                case '/ladder/deaths':
+                    $this->html_renderer->outputPage(
+                        "2b2t Ladder • Most kills",
+                        $this->html_renderer->renderHeader(),
+                        $this->html_renderer->renderWrapper(
+                            $this->html_renderer->renderTag(
+                                'br',
+                                []
+                            ),
+                            $this->leaderboard_handler
+                                ->loadLeaderboard(LeaderboardHandler::LEADERBOARD_MOST_DEATHS)
+                                ->renderLeaderboard()
+                        )
+                    );
+                    break;
+                case '/ladder/joins':
+                    $this->html_renderer->outputPage(
+                        "2b2t Ladder • Most kills",
+                        $this->html_renderer->renderHeader(),
+                        $this->html_renderer->renderWrapper(
+                            $this->html_renderer->renderTag(
+                                'br',
+                                []
+                            ),
+                            $this->leaderboard_handler
+                                ->loadLeaderboard(LeaderboardHandler::LEADERBOARD_MOST_JOINS)
+                                ->renderLeaderboard()
+                        )
+                    );
+                    break;
+                case '/ladder/leaves':
+                    $this->html_renderer->outputPage(
+                        "2b2t Ladder • Most kills",
+                        $this->html_renderer->renderHeader(),
+                        $this->html_renderer->renderWrapper(
+                            $this->html_renderer->renderTag(
+                                'br',
+                                []
+                            ),
+                            $this->leaderboard_handler
+                                ->loadLeaderboard(LeaderboardHandler::LEADERBOARD_MOST_LEAVES)
+                                ->renderLeaderboard()
+                        )
+                    );
+                    break;
+            }
         } catch(Exception $e) {
             if(self::DEBUG) {
                 die(nl2br($e));
@@ -76,6 +168,67 @@ class OutputPage
 
             $this->renderError(500, "Something went wrong while trying to load this page.");
         }
+    }
+
+    /**
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderStats() {
+        $query = new ApiQuery("https://mcapi.us/", "server/status", ["ip" => "2b2t.org"], "usersonline");
+        $result = $this->cache_handler->doQuery($this->io_handler, $query);
+
+        if(!$result) {
+            return $this->html_renderer->renderEmptyTag('div', []);
+        }
+
+        $current_online = $result->getResult()->getNow();
+        $current_max = $result->getResult()->getMax();
+
+        return $this->html_renderer->renderTag(
+            'div',
+            ['class' => 'stats'],
+            $this->html_renderer->renderTag(
+                'table',
+                [],
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$current_online
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$current_max
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            "Currently online"
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            "Maximum online"
+                        )
+                    )
+                )
+            )
+        );
     }
 
     /**

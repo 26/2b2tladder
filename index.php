@@ -5,8 +5,11 @@ spl_autoload_register(function($class) {
 });
 
 $table = new OutputPage();
+
 try {
     $table->render();
 } catch (HttpException $e) {
     $table->renderError();
+} catch (Exception $e) {
+    die("Unable to load page.");
 }

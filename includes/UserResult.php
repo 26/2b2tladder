@@ -3,7 +3,7 @@
 /**
  * Class UserResult
  */
-class UserResult
+class UserResult implements Result
 {
     /**
      * @var bool

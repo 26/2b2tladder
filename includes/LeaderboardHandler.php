@@ -102,7 +102,7 @@ class LeaderboardHandler
             ],
             $this->html_renderer->renderTag(
                 'table',
-                ['class' => 'leaderboard-table'],
+                ['class' => 'leaderboard-table table'],
                 $this->html_renderer->renderTag(
                     'thead',
                     ['class' => 'leaderboard-header'],
@@ -135,28 +135,32 @@ class LeaderboardHandler
                             [],
                             $this->html_renderer->renderText(
                                 'Kills'
-                            )
+                            ),
+                            $this->renderSortIcon(self::LEADERBOARD_MOST_KILLS)
                         ),
                         $this->html_renderer->renderTag(
                             'th',
                             [],
                             $this->html_renderer->renderText(
                                 'Deaths'
-                            )
+                            ),
+                            $this->renderSortIcon(self::LEADERBOARD_MOST_DEATHS)
                         ),
                         $this->html_renderer->renderTag(
                             'th',
                             [],
                             $this->html_renderer->renderText(
                                 'Joins'
-                            )
+                            ),
+                            $this->renderSortIcon(self::LEADERBOARD_MOST_JOINS)
                         ),
                         $this->html_renderer->renderTag(
                             'th',
                             [],
                             $this->html_renderer->renderText(
                                 'Leaves'
-                            )
+                            ),
+                            $this->renderSortIcon(self::LEADERBOARD_MOST_LEAVES)
                         )
                     ),
                     $this->html_renderer->renderTag(
@@ -167,6 +171,22 @@ class LeaderboardHandler
                 )
             )
         );
+    }
+
+    /**
+     * @param $sort
+     * @return Tag
+     * @throws Exception
+     */
+    private function renderSortIcon($sort) {
+        if($this->leaderboard_type === $sort) {
+            return $this->html_renderer->renderTag(
+                'span',
+                ['class' => 'sort-icon fas fa-sort-down']
+            );
+        }
+
+        return $this->html_renderer->renderEmptyTag('span', []);
     }
 
     /**

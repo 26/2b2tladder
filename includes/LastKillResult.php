@@ -3,7 +3,7 @@
 /**
  * Class LastKilLResult
  */
-class LastKilLResult
+class LastKilLResult implements Result
 {
     /**
      * @var int

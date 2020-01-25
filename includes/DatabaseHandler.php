@@ -7,6 +7,7 @@ class DatabaseHandler
     const LASTKILL_CACHE_TABLE = 'lastkill_cache';
     const LASTDEATH_CACHE_TABLE = 'lastdeath_cache';
     const SKIN_CACHE_TABLE = 'skin_cache';
+    const USERSONLINE_CACHE_TABLE = 'usersonline_cache';
 
     /**
      * @var PDO
@@ -37,6 +38,7 @@ class DatabaseHandler
         $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::LASTDEATH_CACHE_TABLE . " (`id` INT NOT NULL, `username` VARCHAR(255) NOT NULL, `date` CHAR(10) NOT NULL, `time` CHAR(5) NOT NULL, `message` VARCHAR(255) NOT NULL, `cache_url` VARCHAR(255) NOT NULL, `cache_endpoint` VARCHAR(255) NOT NULL, `cache_query` VARCHAR(511) NOT NULL, `cache_time` BIGINT NOT NULL, PRIMARY KEY (id))");
         $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::LASTKILL_CACHE_TABLE . " (`id` INT NOT NULL, `username` VARCHAR(255) NOT NULL, `date` CHAR(10) NOT NULL, `time` CHAR(5) NOT NULL, `message` VARCHAR(255) NOT NULL, `cache_url` VARCHAR(255) NOT NULL, `cache_endpoint` VARCHAR(255) NOT NULL, `cache_query` VARCHAR(511) NOT NULL, `cache_time` BIGINT NOT NULL, PRIMARY KEY (id))");
         $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::SKIN_CACHE_TABLE . " (`uuid` CHAR(64) NOT NULL, `skin` VARCHAR(4096) NOT NULL, `cache_time` BIGINT NOT NULL, PRIMARY KEY (uuid))");
+        $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::USERSONLINE_CACHE_TABLE . " (`now` INT NOT NULL, `max` INT NOT NULL, `cache_url` VARCHAR(255) NOT NULL, `cache_endpoint` VARCHAR(255) NOT NULL, `cache_query` VARCHAR(511) NOT NULL, `cache_time` BIGINT NOT NULL)");
     }
 
     /**

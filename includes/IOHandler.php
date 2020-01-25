@@ -3,18 +3,22 @@
 class IOHandler
 {
     const ACCEPTED_URLS = [
-        "https://api.2b2t.dev/"
+        "https://api.2b2t.dev/",
+        "https://mcapi.us/"
     ];
 
     const ACCEPTED_ENDPOINTS = [
         "stats", # Gets the stats of one or all 2b2t users
-        "prioq" # Currently unused
+        "prioq", # Currently unused,
+        "server/status" # Fetches current server status
     ];
 
     const ACCEPTED_PARAMETERS = [
         "username",
         "lastkill",
-        "lastdeath"
+        "lastdeath",
+        "ip",
+        "port"
     ];
 
     CONST SKIN_API_ENDPOINT = "https://crafatar.com/avatars/";
@@ -43,6 +47,9 @@ class IOHandler
             case 'stats':
                 $result_array = json_decode($result, true)[0];
                 return ApiResult::newFromArray($result_array, $query);
+            case 'server/status':
+                $result_array = json_decode($result, true)['players'];
+                return ApiResult::newFromArray($result_array, $query);
             default:
                 return false;
         }
@@ -55,7 +62,7 @@ class IOHandler
      * @return bool|string
      * @throws Exception
      */
-    public function doSkinQuery($uuid) {
+    public function getSkinAsBase64($uuid) {
         if(!is_string($uuid)) {
             throw new InvalidArgumentException("UUID should be of type string.");
         }

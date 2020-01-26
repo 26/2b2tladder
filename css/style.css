@@ -359,11 +359,28 @@ body {
     float: left;
 }
 
+.user-page-header {
+    position: relative;
+}
+
 .user-page-title {
-    line-height: 0;
     margin: 0 0 0 15px;
     font-weight: normal;
     font-size: 0.9em;
+    display: block;
+    position: absolute;
+    bottom: -52px;
+    left: 135px
+}
+
+.last-refreshed {
+    position: absolute;
+    right: 0;
+    bottom: -70px;
+}
+
+.user-page-title h1 {
+    margin: 0;
 }
 
 .user-page-header .skin-container {
@@ -456,7 +473,34 @@ body {
     color: #4dd3af;
 }
 
-.false {
+.false, .error {
     color: #f59594;
+}
+
+.error p {
+    text-align: center;
+}
+
+.footer {
+    margin-top: 25px;
+    margin-left: 15px;
+    color: white;
+    font-size: 12px;
+}
+
+.footer p {
+    margin: 0;
+}
+
+.footer .footer-image, .footer .footer-text {
+    display: inline-block;
+}
+
+.footer .footer-image {
+    margin-right: 10px;
+}
+
+.footer .footer-image img {
+    width: 128px;
 }
 

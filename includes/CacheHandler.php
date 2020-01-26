@@ -52,6 +52,28 @@ class CacheHandler
         return ($statement->rowCount() > 0 && $statement->fetch()['cache_time'] + self::CACHE_INVALIDATION_TIME_LIMIT > time());
     }
 
+    public function isCachedFor(ApiQuery $query)
+    {
+        $table = $this->getTableNameFromType($query->getType());
+
+        try {
+            $statement = $this->database->getConnection()->prepare("SELECT `cache_time` FROM `$table` WHERE `cache_url` = :url AND `cache_endpoint` = :endpoint AND `cache_query` = :query");
+            $statement->execute([
+                'url' => $query->getURL(),
+                'endpoint' => $query->getEndpoint(),
+                'query' => http_build_query($query->getParameters())
+            ]);
+        } catch(PDOException $exception) {
+            return false;
+        }
+
+        if(!$statement->rowCount()) {
+            throw new LogicException("Tried to get cached time of nonexistent object.");
+        }
+
+        return time() - $statement->fetch()['cache_time'];
+    }
+
     /**
      * @param ApiQuery $query
      * @return ApiResult

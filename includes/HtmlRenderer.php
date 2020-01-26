@@ -251,6 +251,50 @@ class HtmlRenderer
      * @return Tag
      * @throws Exception
      */
+    public function renderFooter() {
+        return $this->renderTag(
+            'div',
+            ['class' => 'footer'],
+            $this->renderTag(
+                'div',
+                ['class' => 'footer-image'],
+                $this->renderTag(
+                    'img',
+                    ['src' => self::LOGO_MAIN, 'alt' => '']
+                )
+            ),
+            $this->renderTag(
+                'div',
+                ['class' => 'footer-text'],
+                $this->renderTag(
+                    'p',
+                    [],
+                    $this->renderText(
+                        'This site is not affiliated with 2b2t.'
+                    )
+                ),
+                $this->renderTag(
+                    'p',
+                    [],
+                    $this->renderText(
+                        'Icons by Icons8 • Data from api.2b2t.dev'
+                    )
+                ),
+                $this->renderTag(
+                    'p',
+                    [],
+                    $this->renderText(
+                        '© 2020 - Site by Marijn'
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * @return Tag
+     * @throws Exception
+     */
     public function renderForm()
     {
         $arguments = func_get_args();
@@ -280,6 +324,40 @@ class HtmlRenderer
                 ['class' => 'boolean-icon false fas fa-times']
             );
         }
+    }
+
+    /**
+     * @param $string
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderInlineError($string) {
+        return $this->renderTag(
+            'span',
+            ['class' => 'error'],
+            $this->renderText(
+                $string
+            )
+        );
+    }
+
+    /**
+     * @param $string
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderError($string) {
+        return $this->renderTag(
+            'div',
+            ['class' => 'error'],
+            $this->renderTag(
+                'p',
+                [],
+                $this->renderText(
+                    $string
+                )
+            )
+        );
     }
 
     /**

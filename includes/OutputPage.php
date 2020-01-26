@@ -73,7 +73,8 @@ class OutputPage
                                 $this->renderStats(),
                                 $this->leaderboard_handler
                                     ->loadLeaderboard(LeaderboardHandler::LEADERBOARD_MOST_KILLS)
-                                    ->renderLeaderboard()
+                                    ->renderLeaderboard(),
+                                $this->html_renderer->renderFooter()
                             )
                         )
                     );
@@ -99,7 +100,8 @@ class OutputPage
                                 $search_handler
                                     ->doSearch($search_term)
                                     ->renderSearch()
-                            )
+                            ),
+                            $this->html_renderer->renderFooter()
                         )
                     );
 
@@ -133,7 +135,8 @@ class OutputPage
                             ),
                             $this->leaderboard_handler
                                 ->loadLeaderboard($leaderboard)
-                                ->renderLeaderboard()
+                                ->renderLeaderboard(),
+                            $this->html_renderer->renderFooter()
                         )
                     );
 
@@ -223,6 +226,7 @@ class OutputPage
      * @param $code
      * @param $message
      * @param null $description
+     * @throws Exception
      */
     public static function renderError($code, $message, $description =  null) {
         if(!is_int($code) || !is_string($message) || !is_string($description)) {
@@ -233,7 +237,6 @@ class OutputPage
 
         $html_renderer = new HtmlRenderer();
 
-        /*
         $html_renderer->outputPage( // Render default page
             $message, // The title of the page
             $html_renderer->renderHeader(), // Default header
@@ -243,7 +246,6 @@ class OutputPage
             ),
             $html_renderer->renderFooter() // Default footer
         );
-        */
 
         die();
     }

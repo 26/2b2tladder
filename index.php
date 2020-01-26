@@ -9,7 +9,7 @@ $table = new OutputPage();
 try {
     $table->render();
 } catch (HttpException $e) {
-    $table->renderError();
+    $table->renderError(500, "Something went wrong");
 } catch (Exception $e) {
     die("Unable to load page.");
 }

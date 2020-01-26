@@ -2,6 +2,7 @@
 
 class UserPage
 {
+    const PERCENTAGE_PRECISION = 2;
     /**
      * @var HtmlRenderer
      */
@@ -73,6 +74,11 @@ class UserPage
     private $rank_handler;
 
     /**
+     * @var bool
+     */
+    private $time_cached;
+
+    /**
      * UserPage constructor.
      */
     public function __construct() {
@@ -113,8 +119,6 @@ class UserPage
 
         $this->rank_handler->loadRanksFrom($this->user_result->getResult());
 
-        $this->user_exists = true;
-
         return $this;
     }
 
@@ -130,6 +134,7 @@ class UserPage
                 "The external API we are using to fetch our data currently does not support usernames with an underscore in them. This should get resolved soon."
             );
         }
+
         if(!$this->user_exists) {
             // Page was not loaded or user does not exist.
             OutputPage::renderError(
@@ -171,6 +176,17 @@ class UserPage
                                     $this->user_result->getResult()->getUsername()
                                 )
                             )
+                        ),
+                        $this->html_renderer->renderTag(
+                            'div',
+                            ['class' => 'last-refreshed'],
+                            $this->html_renderer->renderTag(
+                                'p',
+                                [],
+                                $this->html_renderer->renderText(
+                                    "Last refreshed " . floor($this->time_cached / 60) . " minutes ago."
+                                )
+                            )
                         )
                     ),
                     $this->html_renderer->renderEmptyTag(
@@ -193,88 +209,7 @@ class UserPage
                                         'Profile Info'
                                     )
                                 ),
-                                $this->html_renderer->renderTag(
-                                    'table',
-                                    [],
-                                    $this->html_renderer->renderTag(
-                                        'tbody',
-                                        [],
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'Username'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    $this->user_result->getResult()->getUsername()
-                                                )
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'UUID'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['title' => $this->user_result->getResult()->getUUID()],
-                                                $this->html_renderer->renderText(
-                                                    $this->user_result->getResult()->getUUID()
-                                                )
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'Admin status'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['title' => $this->user_result->getResult()->getUUID()],
-                                                $this->html_renderer->renderBooleanIcon($this->user_result->getResult()->getAdminStatus())
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'Skin icon'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['class' => 'skin-icon'],
-                                                $this->html_renderer->renderTag(
-                                                    'img',
-                                                    [
-                                                        'src' => 'data:image/png;base64,' . $this->skin_icon_base64,
-                                                        'alt' => ''
-                                                    ]
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
+                                $this->renderProfileInfo()
                             ),
                             $this->html_renderer->renderTag(
                                 'div',
@@ -286,88 +221,7 @@ class UserPage
                                         'Kill stats'
                                     )
                                 ),
-                                $this->html_renderer->renderTag(
-                                    'table',
-                                    [],
-                                    $this->html_renderer->renderTag(
-                                        'tbody',
-                                        [],
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'Kills'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    (string)$this->user_result->getResult()->getKills()
-                                                )
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'World Rank'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['title' => $this->user_result->getResult()->getUUID()],
-                                                $this->html_renderer->renderText(
-                                                    (string)$this->rank_handler->kills_rank . ' (' . round($this->rank_handler->kills_rank_percentage * 100, 3) . '%)'
-                                                )
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'K/D ratio'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['title' => $this->user_result->getResult()->getUUID()],
-                                                $this->html_renderer->renderBooleanIcon($this->user_result->getResult()->getAdminStatus())
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'Skin icon'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['class' => 'skin-icon'],
-                                                $this->html_renderer->renderTag(
-                                                    'img',
-                                                    [
-                                                        'src' => 'data:image/png;base64,' . $this->skin_icon_base64,
-                                                        'alt' => ''
-                                                    ]
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
+                                $this->renderKillInfo()
                             ),
                             $this->html_renderer->renderTag(
                                 'div',
@@ -376,91 +230,10 @@ class UserPage
                                     'h1',
                                     [],
                                     $this->html_renderer->renderText(
-                                        'Profile Info'
+                                        'Death stats'
                                     )
                                 ),
-                                $this->html_renderer->renderTag(
-                                    'table',
-                                    [],
-                                    $this->html_renderer->renderTag(
-                                        'tbody',
-                                        [],
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'Username'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    $this->user_result->getResult()->getUsername()
-                                                )
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'UUID'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['title' => $this->user_result->getResult()->getUUID()],
-                                                $this->html_renderer->renderText(
-                                                    $this->user_result->getResult()->getUUID()
-                                                )
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'Admin status'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['title' => $this->user_result->getResult()->getUUID()],
-                                                $this->html_renderer->renderBooleanIcon($this->user_result->getResult()->getAdminStatus())
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'Skin icon'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['class' => 'skin-icon'],
-                                                $this->html_renderer->renderTag(
-                                                    'img',
-                                                    [
-                                                        'src' => 'data:image/png;base64,' . $this->skin_icon_base64,
-                                                        'alt' => ''
-                                                    ]
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
+                                $this->renderDeathInfo()
                             ),
                             $this->html_renderer->renderTag(
                                 'div',
@@ -469,92 +242,398 @@ class UserPage
                                     'h1',
                                     [],
                                     $this->html_renderer->renderText(
-                                        'Profile Info'
+                                        'Join stats'
                                     )
                                 ),
-                                $this->html_renderer->renderTag(
-                                    'table',
-                                    [],
-                                    $this->html_renderer->renderTag(
-                                        'tbody',
-                                        [],
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'Username'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    $this->user_result->getResult()->getUsername()
-                                                )
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'UUID'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['title' => $this->user_result->getResult()->getUUID()],
-                                                $this->html_renderer->renderText(
-                                                    $this->user_result->getResult()->getUUID()
-                                                )
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'Admin status'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['title' => $this->user_result->getResult()->getUUID()],
-                                                $this->html_renderer->renderBooleanIcon($this->user_result->getResult()->getAdminStatus())
-                                            )
-                                        ),
-                                        $this->html_renderer->renderTag(
-                                            'tr',
-                                            [],
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                [],
-                                                $this->html_renderer->renderText(
-                                                    'Skin icon'
-                                                )
-                                            ),
-                                            $this->html_renderer->renderTag(
-                                                'td',
-                                                ['class' => 'skin-icon'],
-                                                $this->html_renderer->renderTag(
-                                                    'img',
-                                                    [
-                                                        'src' => 'data:image/png;base64,' . $this->skin_icon_base64,
-                                                        'alt' => ''
-                                                    ]
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
+                                $this->renderJoinInfo()
                             )
+                        )
+                    )
+                ),
+                $this->html_renderer->renderFooter()
+            )
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function renderKillInfo() {
+        return $this->html_renderer->renderTag(
+            'table',
+            [],
+            $this->html_renderer->renderTag(
+                'tbody',
+                [],
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'Kills'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$this->user_result->getResult()->getKills()
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'World Rank'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$this->rank_handler->kills_rank . ' (' . round($this->rank_handler->kills_rank_percentage * 100, self::PERCENTAGE_PRECISION) . '%)'
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'K/D ratio'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->renderKDRatio()
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'Last kill'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        ['class' => 'skin-icon'],
+                        $this->renderLastKillMessage()
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function renderDeathInfo() {
+        return $this->html_renderer->renderTag(
+            'table',
+            [],
+            $this->html_renderer->renderTag(
+                'tbody',
+                [],
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'Deaths'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$this->user_result->getResult()->getDeaths()
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'World Rank'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$this->rank_handler->deaths_rank . ' (' . round($this->rank_handler->deaths_rank_percentage * 100, self::PERCENTAGE_PRECISION) . '%)'
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'Last death'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        ['class' => 'skin-icon'],
+                        $this->renderLastDeathMessage()
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderKDRatio() {
+        if($this->user_result->getResult()->getDeaths() === 0) {
+            return $this->html_renderer->renderText(
+                'N/A'
+            );
+        }
+
+        $kd_ratio = round($this->user_result->getResult()->getKills() / $this->user_result->getResult()->getDeaths(), 2);
+
+        return $this->html_renderer->renderText(
+            (string)$kd_ratio
+        );
+    }
+
+    /**
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderLastKillMessage() {
+        if(!$this->last_kill_result) {
+            return $this->html_renderer->renderInlineError(
+                "Not available"
+            );
+        }
+
+        return $this->html_renderer->renderTag(
+            'span',
+            ['title' => $this->last_kill_result->getResult()->getDate() . " " . $this->last_kill_result->getResult()->getTime() . " (" . $this->last_kill_result->getResult()->getMessage() . ")"],
+            $this->html_renderer->renderText(
+                $this->last_kill_result->getResult()->getDate() . " " . $this->last_kill_result->getResult()->getTime()
+            )
+        );
+    }
+
+    /**
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderLastDeathMessage() {
+        if(!$this->last_death_result) {
+            return $this->html_renderer->renderInlineError(
+                "Not available"
+            );
+        }
+
+        return $this->html_renderer->renderTag(
+            'span',
+            ['title' => $this->last_death_result->getResult()->getDate() . " " . $this->last_death_result->getResult()->getTime() . " (" . $this->last_death_result->getResult()->getMessage() . ")"],
+            $this->html_renderer->renderText(
+                $this->last_death_result->getResult()->getDate() . " " . $this->last_death_result->getResult()->getTime()
+            )
+        );
+    }
+
+    /**
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderProfileInfo() {
+        if(!$this->user_result) {
+            return $this->html_renderer->renderError("Unable to get profile info");
+        }
+
+        return $this->html_renderer->renderTag(
+            'table',
+            [],
+            $this->html_renderer->renderTag(
+                'tbody',
+                [],
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'Username'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            $this->user_result->getResult()->getUsername()
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'UUID'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            $this->user_result->getResult()->getUUID()
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'Admin status'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderBooleanIcon($this->user_result->getResult()->getAdminStatus())
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'Skin icon'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        ['class' => 'skin-icon'],
+                        $this->html_renderer->renderTag(
+                            'img',
+                            [
+                                'src' => 'data:image/png;base64,' . $this->skin_icon_base64,
+                                'alt' => ''
+                            ]
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderJoinInfo(){
+        return $this->html_renderer->renderTag(
+            'table',
+            [],
+            $this->html_renderer->renderTag(
+                'tbody',
+                [],
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'Joins'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$this->user_result->getResult()->getJoins()
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'Leaves'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$this->user_result->getResult()->getLeaves()
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'Rank (joins)'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$this->rank_handler->joins_rank . ' (' . round($this->rank_handler->joins_rank_percentage * 100, self::PERCENTAGE_PRECISION) . '%)'
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            'Rank (leaves)'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$this->rank_handler->leaves_rank . ' (' . round($this->rank_handler->leaves_rank_percentage * 100, self::PERCENTAGE_PRECISION) . '%)'
                         )
                     )
                 )
@@ -570,6 +649,7 @@ class UserPage
     private function loadExternalData($username) {
         if(strpos($username, '_') !== false) {
             $this->legacy_username = true;
+
             return false;
         }
 
@@ -581,13 +661,12 @@ class UserPage
             return false;
         }
 
-        if(!$this->last_kill_result = $this->cache_handler->doQuery($this->io_handler, $lastkill_query)) {
-            return false;
-        }
+        $this->time_cached = $this->cache_handler->isCachedFor($user_query);
 
-        if(!$this->last_death_result = $this->cache_handler->doQuery($this->io_handler, $lastdeath_query)) {
-            return false;
-        }
+        $this->user_exists = true;
+
+        $this->last_kill_result = $this->cache_handler->doQuery($this->io_handler, $lastkill_query);
+        $this->last_death_result = $this->cache_handler->doQuery($this->io_handler, $lastdeath_query);
 
         return true;
     }

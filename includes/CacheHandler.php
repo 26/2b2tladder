@@ -184,6 +184,7 @@ class CacheHandler
             $statement = $this->database->getConnection()->prepare($query);
             $statement->execute($parameters);
         } catch(PDOException $exception) {
+            die($exception);
             return false;
         }
 

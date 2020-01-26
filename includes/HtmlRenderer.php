@@ -264,6 +264,25 @@ class HtmlRenderer
     }
 
     /**
+     * @param $bool
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderBooleanIcon($bool) {
+        if($bool) {
+            return $this->renderTag(
+                'span',
+                ['class' => 'boolean-icon true fas fa-check']
+            );
+        } else {
+            return $this->renderTag(
+                'span',
+                ['class' => 'boolean-icon false fas fa-times']
+            );
+        }
+    }
+
+    /**
      * Renders an input tag.
      *
      * @param $input_type

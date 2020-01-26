@@ -344,3 +344,119 @@ body {
     background-color: inherit !important;
 }
 
+.user-page {
+    margin-top: 45px; /* skin-container overflow */
+}
+
+.user-page .line {
+    height: 1px;
+    background-color: #505050;
+    clear: both;
+    margin: 0;
+}
+
+.user-page-header .skin-container, .user-page-header .user-page-title {
+    float: left;
+}
+
+.user-page-title {
+    line-height: 0;
+    margin: 0 0 0 15px;
+    font-weight: normal;
+    font-size: 0.9em;
+}
+
+.user-page-header .skin-container {
+    height: calc(60px + 45px); /* .user-page-header height + -margin-top */
+    margin-top: -45px;
+
+    overflow: hidden;
+    padding-left: 10px;
+}
+
+.user-page-header .skin-render {
+    height: 256px;
+}
+
+.user-page-content {
+    margin-top: 15px;
+    font-size: 14px;
+    width: 100%;
+}
+
+.user-page-content .box {
+    background-color: #222222;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 18px;
+    box-sizing: border-box;
+}
+
+.row {
+    display: flex;
+    flex-wrap: nowrap;
+    margin: 8px 0;
+}
+
+.row:first-child {
+    margin-top: 0;
+}
+
+.row:last-child {
+    margin-bottom: 0;
+}
+
+.col-md {
+    width: 100%;
+    margin: 0 8px;
+}
+
+.col-md:first-child {
+    margin-left: 0;
+}
+
+.col-md:last-child {
+    margin-right: 0;
+}
+
+.box h1 {
+    font-size: 1.4em;
+    margin: 0;
+    text-align: center;
+}
+
+.box table {
+    margin-top: 10px;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.box table tr {
+    line-height: 32px;
+}
+
+.box table td {
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 50%;
+}
+
+.box table td:nth-child(1) {
+    font-weight: bold;
+}
+
+.skin-icon img {
+    width: 32px;
+    margin: 0 0 -11px 0;
+}
+
+.true {
+    color: #4dd3af;
+}
+
+.false {
+    color: #f59594;
+}
+

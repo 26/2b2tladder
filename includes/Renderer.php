@@ -113,7 +113,7 @@ if(( basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"]) ) && grabGetVal
  *
  */
 class Renderer {
-    private $fallback_img = 'char.png'; // Use a not found skin whenever something goes wrong.
+    private $fallback_img = __DIR__ . '/../images/default.png'; // Use a not found skin whenever something goes wrong.
     private $localSkinFile = null;
     private $playerName = null;
     private $playerSkin = false;

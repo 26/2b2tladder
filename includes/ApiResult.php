@@ -118,9 +118,9 @@ class ApiResult
 
         if(!is_int($result['id'])          ||
            !is_string($result['username']) ||
-           !is_int($result['date'])        ||
-           !is_int($result['time'])        ||
-           !is_int($result['message']))    {
+           !is_string($result['date'])     ||
+           !is_string($result['time'])     ||
+           !is_string($result['message']))    {
            return false;
         }
 
@@ -148,9 +148,9 @@ class ApiResult
 
         if(!is_int($result['id'])          ||
            !is_string($result['username']) ||
-           !is_int($result['date'])        ||
-           !is_int($result['time'])        ||
-           !is_int($result['message']))    {
+           !is_string($result['date'])     ||
+           !is_string($result['time'])     ||
+           !is_string($result['message']))    {
            return false;
         }
 

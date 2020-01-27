@@ -77,6 +77,50 @@ class HtmlRenderer
                 ]
             ),
             $this->renderTag(
+                'meta',
+                ['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1']
+            ),
+            $this->renderTag(
+                'meta',
+                ['name' => 'description', 'content' => 'Track and compare your statistics on 2b2t.']
+            ),
+            $this->renderTag(
+                'meta',
+                ['name' => 'author', 'content' => '2b2tladder']
+            ),
+            $this->renderTag(
+                'meta',
+                ['name' => 'keywords', 'content' => '2b2t leaderboard,2b2tladder,2b2tleaderboard,2b2t statistics,2b2t api']
+            ),
+            $this->renderTag(
+                'meta',
+                ['name' => 'copyright', 'content' => '2b2tladder']
+            ),
+            $this->renderTag(
+                'meta',
+                ['name' => 'url', 'content' => 'https://2b2tladder.com']
+            ),
+            $this->renderTag(
+                'meta',
+                ['name' => 'apple-mobile-web-app-title', 'content' => '2b2tladder']
+            ),
+            $this->renderTag(
+                'meta',
+                ['name' => 'application-name', 'content' => '2b2tladder']
+            ),
+            $this->renderTag(
+                'meta',
+                ['name' => 'mobile-web-app-capable', 'content' => 'yes']
+            ),
+            $this->renderTag(
+                'meta',
+                ['name' => 'robots', 'content' => 'index,nofollow']
+            ),
+            $this->renderTag(
+                'meta',
+                ['name' => 'revisit-after', 'content' => '1 month']
+            ),
+            $this->renderTag(
                 'link',
                 ['rel' => 'stylesheet', 'href' => self::STYLESHEET]
             ),

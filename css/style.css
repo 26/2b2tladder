@@ -538,3 +538,12 @@ body {
     color: inherit;
 }
 
+.plainlink {
+    color: inherit;
+    text-decoration: none;
+}
+
+.plainlink:hover {
+    color: #c3c3c3;
+}
+

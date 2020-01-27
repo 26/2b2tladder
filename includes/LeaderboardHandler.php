@@ -133,32 +133,48 @@ class LeaderboardHandler
                         $this->html_renderer->renderTag(
                             'th',
                             [],
-                            $this->html_renderer->renderText(
-                                'Kills'
+                            $this->html_renderer->renderTag(
+                                'a',
+                                ['class' => 'plainlink', 'href' => '/ladder/kills'],
+                                $this->html_renderer->renderText(
+                                    'Kills'
+                                )
                             ),
                             $this->renderSortIcon(self::LEADERBOARD_MOST_KILLS)
                         ),
                         $this->html_renderer->renderTag(
                             'th',
                             [],
-                            $this->html_renderer->renderText(
-                                'Deaths'
+                            $this->html_renderer->renderTag(
+                                'a',
+                                ['class' => 'plainlink', 'href' => '/ladder/deaths'],
+                                $this->html_renderer->renderText(
+                                    'Deaths'
+                                )
                             ),
                             $this->renderSortIcon(self::LEADERBOARD_MOST_DEATHS)
                         ),
                         $this->html_renderer->renderTag(
                             'th',
                             [],
-                            $this->html_renderer->renderText(
-                                'Joins'
+                            $this->html_renderer->renderTag(
+                                'a',
+                                ['class' => 'plainlink', 'href' => '/ladder/joins'],
+                                $this->html_renderer->renderText(
+                                    'Joins'
+                                )
                             ),
                             $this->renderSortIcon(self::LEADERBOARD_MOST_JOINS)
                         ),
                         $this->html_renderer->renderTag(
                             'th',
                             [],
-                            $this->html_renderer->renderText(
-                                'Leaves'
+                            $this->html_renderer->renderTag(
+                                'a',
+                                ['class' => 'plainlink', 'href' => '/ladder/leaves'],
+                                $this->html_renderer->renderText(
+                                    'Leaves'
+                                )
                             ),
                             $this->renderSortIcon(self::LEADERBOARD_MOST_LEAVES)
                         )

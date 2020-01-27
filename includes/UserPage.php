@@ -184,7 +184,7 @@ class UserPage
                                 'p',
                                 [],
                                 $this->html_renderer->renderText(
-                                    "Last updated " . floor($this->time_cached / 60) . " minutes ago"
+                                    $this->getLastUpdatedMessage()
                                 )
                             )
                         )
@@ -705,5 +705,15 @@ class UserPage
         $this->last_death_result = $this->cache_handler->doQuery($this->io_handler, $lastdeath_query);
 
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    private function getLastUpdatedMessage() {
+        $updated_minutes = floor($this->time_cached / 60);
+
+        if($updated_minutes < 3) return "Last updated just now";
+        return "Last updated $updated_minutes ago";
     }
 }

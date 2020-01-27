@@ -714,6 +714,6 @@ class UserPage
         $updated_minutes = floor($this->time_cached / 60);
 
         if($updated_minutes < 3) return "Last updated just now";
-        return "Last updated $updated_minutes ago";
+        return "Last updated $updated_minutes minutes ago";
     }
 }

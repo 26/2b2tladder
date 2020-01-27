@@ -10,6 +10,7 @@ class DatabaseHandler
     const SKIN_CACHE_TABLE = 'skin_cache';
     const USERSONLINE_CACHE_TABLE = 'usersonline_cache';
     const RENDEREDSKIN_CACHE_TABLE = 'renderedskin_cache';
+    const RANKS_TABLE = 'ranks';
 
     /**
      * @var PDO
@@ -42,6 +43,7 @@ class DatabaseHandler
         $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::SKIN_CACHE_TABLE . " (`uuid` CHAR(64) NOT NULL, `skin` VARCHAR(4096) NOT NULL, `cache_time` BIGINT NOT NULL, PRIMARY KEY (uuid))");
         $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::USERSONLINE_CACHE_TABLE . " (`now` INT NOT NULL, `max` INT NOT NULL, `cache_url` VARCHAR(255) NOT NULL, `cache_endpoint` VARCHAR(255) NOT NULL, `cache_query` VARCHAR(511) NOT NULL, `cache_time` BIGINT NOT NULL)");
         $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::RENDEREDSKIN_CACHE_TABLE . " (`skin` BLOB NOT NULL, `username` CHAR(64) NOT NULL,  `cache_time` BIGINT NOT NULL, PRIMARY KEY (username))");
+        $this->getConnection()->query("CREATE TABLE IF NOT EXISTS " . self::RANKS_TABLE . " (`type` CHAR(6) NOT NULL, `rank` INT NOT NULL, `uuid` CHAR(128) NOT NULL, `time` BIGINT NOT NULL)");
     }
 
     /**

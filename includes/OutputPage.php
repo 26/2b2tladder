@@ -2,7 +2,7 @@
 
 class OutputPage
 {
-    const DEBUG = true;
+    const DEBUG = false;
 
     /**
      * @var CacheHandler
@@ -65,7 +65,7 @@ class OutputPage
                 case '':
                 case 'home':
                     $this->html_renderer->outputPage(
-                        "2b2t Ladder • Leaderboard",
+                        "2b2tladder • Leaderboard",
                         $this->html_renderer->renderHeader("home"),
                         $this->html_renderer->renderHomePage(
                             $this->html_renderer->renderHomePageSearch(),
@@ -90,7 +90,7 @@ class OutputPage
                     }
 
                     $this->html_renderer->outputPage(
-                        "2b2t Ladder • Search results",
+                        "2b2tladder • Search results",
                         $this->html_renderer->renderHeader(),
                         $this->html_renderer->renderWrapper(
                             $this->html_renderer->renderSearch(
@@ -122,11 +122,11 @@ class OutputPage
                             break;
                         default:
                             $this->renderError(404, "Page not found.");
-                            break;
+                            return;
                     }
 
                     $this->html_renderer->outputPage(
-                        "2b2t Ladder • Most $parameter",
+                        "2b2tladder • Most $parameter",
                         $this->html_renderer->renderHeader(),
                         $this->html_renderer->renderWrapper(
                             $this->html_renderer->renderTag(
@@ -149,6 +149,25 @@ class OutputPage
                     (new UserPage())->loadUserPage($parameter)->render();
 
                     return;
+                case 'more':
+                    switch($parameter) {
+                        case 'discord':
+                            header('Location: https://discord.gg/DeexSGT');
+                            return;
+                        case 'faq':
+                            $this->html_renderer->outputPage(
+                                "2b2tladder • FAQ",
+                                $this->html_renderer->renderHeader(),
+                                $this->html_renderer->renderWrapper(
+                                    $this->html_renderer->renderFAQ(),
+                                    $this->html_renderer->renderFooter()
+                                )
+                            );
+                            return;
+                        default:
+                            $this->renderError(404, "Page not found");
+                            return;
+                    }
                 default:
                     $this->renderError(404, "Page not found");
             }
@@ -229,7 +248,7 @@ class OutputPage
      * @throws Exception
      */
     public static function renderError($code, $message, $description =  null) {
-        if(!is_int($code) || !is_string($message) || !is_string($description)) {
+        if(!is_int($code) || !is_string($message) || ($description && !is_string($description))) {
             throw new InvalidArgumentException();
         }
 
@@ -238,13 +257,15 @@ class OutputPage
         $html_renderer = new HtmlRenderer();
 
         $html_renderer->outputPage( // Render default page
-            $message, // The title of the page
+            "2b2tladder • " . $message, // The title of the page
             $html_renderer->renderHeader(), // Default header
-            $html_renderer->renderErrorPage( // Error page
-                $html_renderer->renderErrorImage($code), // Error page image
-                $html_renderer->renderErrorMessage($message) // Error page message
-            ),
-            $html_renderer->renderFooter() // Default footer
+            $html_renderer->renderWrapper(
+                $html_renderer->renderErrorPage( // Error page
+                    $html_renderer->renderErrorMessage($message, $code), // Error page message
+                    $html_renderer->renderErrorDescription($description)
+                ),
+                $html_renderer->renderFooter() // Default footer
+            )
         );
 
         die();

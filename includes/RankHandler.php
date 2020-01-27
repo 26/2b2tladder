@@ -1,10 +1,10 @@
 <?php
 
 class RankHandler {
-    const KILLS_RANK = 1;
-    const DEATHS_RANK = 2;
-    const JOINS_RANK = 3;
-    const LEAVES_RANK = 4;
+    const KILLS_RANK_TYPE = 'kills';
+    const DEATHS_RANK_TYPE = 'deaths';
+    const JOINS_RANK_TYPE = 'joins';
+    const LEAVES_RANK_TYPE = 'leaves';
 
     public $kills_rank;
     public $deaths_rank;
@@ -27,6 +27,11 @@ class RankHandler {
      */
     private $user_result;
 
+    /**
+     * @var DatabaseHandler
+     */
+    private $database;
+
     public function __construct() {
         $this->database_handler = DatabaseHandler::newFromConfig();
     }
@@ -37,6 +42,7 @@ class RankHandler {
     public function loadRanksFrom(Result $user_result) {
         $this->user_result = $user_result;
 
+        $this->database = DatabaseHandler::newFromConfig();
         $this->num_of_records = $this->getTotalRecords();
 
         $this->kills_rank = $this->getKillsRank();
@@ -48,6 +54,33 @@ class RankHandler {
         $this->deaths_rank_percentage = $this->calculatePercentage($this->deaths_rank);
         $this->joins_rank_percentage = $this->calculatePercentage($this->joins_rank);
         $this->leaves_rank_percentage = $this->calculatePercentage($this->leaves_rank);
+
+        try {
+            $this->storeRanks();
+        } catch(Exception $e) {}
+    }
+
+    /**
+     * @param $type
+     * @return string
+     */
+    public function getBestRank($type) {
+        if(!$this->user_result) {
+            throw new LogicException("Tried accessing rank data before loading user");
+        }
+
+        if(!is_string($type)) {
+            throw new InvalidArgumentException("Type must be of type string");
+        }
+
+        if($type !== self::LEAVES_RANK_TYPE && $type !== self::JOINS_RANK_TYPE && $type !== self::DEATHS_RANK_TYPE && $type !== self::KILLS_RANK_TYPE) {
+            throw new InvalidArgumentException("Type is not a valid constant");
+        }
+
+        $statement = $this->database->getConnection()->prepare("SELECT MAX(`rank`) AS maximum FROM " . DatabaseHandler::RANKS_TABLE . " WHERE `uuid` = ? AND `type` = ?");
+        $statement->execute([$this->user_result->getUUID(), $type]);
+
+        return $statement->fetch()['maximum'];
     }
 
     public function getTotalRecords() {
@@ -103,5 +136,41 @@ class RankHandler {
      */
     private function calculatePercentage($rank) {
         return $rank / $this->num_of_records;
+    }
+
+    /**
+     * Stores the calculated ranks.
+     */
+    private function storeRanks() {
+        if(!$this->user_result) {
+            throw new LogicException("Tried accessing rank data before loading user");
+        }
+
+        $uuid = $this->user_result->getUUID();
+        $time = time();
+
+        // TODO: Only store ranks when API cache expires
+
+        $statement = $this->database->getConnection()->prepare(
+            "INSERT INTO `" . DatabaseHandler::RANKS_TABLE . "` (" .
+                "`type`," .
+                "`rank`," .
+                "`uuid`," .
+                "`time`" .
+            ") VALUES " .
+            "('" . self::KILLS_RANK_TYPE  . "', ?, ?, $time)," .
+            "('" . self::DEATHS_RANK_TYPE . "', ?, ?, $time)," .
+            "('" . self::JOINS_RANK_TYPE  . "', ?, ?, $time)," .
+            "('" . self::LEAVES_RANK_TYPE . "', ?, ?, $time)"
+        );
+
+        $statement->execute(
+            [
+                $this->kills_rank, $uuid,
+                $this->deaths_rank, $uuid,
+                $this->joins_rank, $uuid,
+                $this->leaves_rank, $uuid
+            ]
+        );
     }
 }

@@ -284,7 +284,14 @@ class HtmlRenderer
                     'p',
                     [],
                     $this->renderText(
-                        '© 2020 - Site by Marijn'
+                        '© 2020 - Site by Marijn - '
+                    ),
+                    $this->renderTag(
+                        'a',
+                        ['href' => 'https://github.com/Pancake/2b2tladder', 'class' => 'footer-link'],
+                        $this->renderText(
+                            'GitHub'
+                        )
                     )
                 )
             )
@@ -464,6 +471,7 @@ class HtmlRenderer
     }
 
     /**
+     * @param null $active
      * @return Tag
      * @throws Exception
      */
@@ -495,6 +503,144 @@ class HtmlRenderer
                         "class" => "menu"
                     ],
                     ...$this->renderMenuLinks($active)
+                )
+            )
+        );
+    }
+
+    /**
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderErrorPage() {
+        $arguments = func_get_args();
+
+        return $this->renderTag(
+            'div',
+            ['class' => 'container error-page'],
+            ...$arguments
+        );
+    }
+
+    /**
+     * @param $string
+     * @param $code
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderErrorMessage($string, $code) {
+        return $this->renderTag(
+            'h1',
+            ['class' => 'error-title'],
+            $this->renderText(
+                "Error $code: $string"
+            )
+        );
+    }
+
+    /**
+     * @param $description
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderErrorDescription($description) {
+        if(!$description) return $this->renderTag(
+            'p',
+            ['class' => 'error-description'],
+            $this->renderText(
+                ':~('
+            )
+        );
+
+        return $this->renderTag(
+            'p',
+            ['class' => 'error-description'],
+            $this->renderText(
+                $description
+            ),
+            $this->renderTag(
+                'br',
+                []
+            ),
+            $this->renderTag(
+                'br',
+                []
+            ),
+            $this->renderText(
+                ':~('
+            )
+        );
+    }
+
+    /**
+     * @return Tag
+     * @throws Exception
+     */
+    public function renderFAQ() {
+        return $this->renderTag(
+            'div',
+            ['class' => 'container faq'],
+            $this->renderTag(
+                'h1',
+                [],
+                $this->renderText(
+                    "Frequently  Asked Questions"
+                )
+            ),
+            $this->renderTag(
+                'p',
+                ['class' => 'faq-q'],
+                $this->renderText(
+                    'What is this?'
+                )
+            ),
+            $this->renderTag(
+                'p',
+                ['class' => 'faq-a'],
+                $this->renderText(
+                    'It is a site for tracking your progess on 2b2t.org.'
+                )
+            ),
+            $this->renderTag(
+                'p',
+                ['class' => 'faq-q'],
+                $this->renderText(
+                    'Is there a Discord server?'
+                )
+            ),
+            $this->renderTag(
+                'p',
+                ['class' => 'faq-a'],
+                $this->renderText(
+                    'Yes, there is. Click on More > Discord in the header to join it.'
+                )
+            ),
+            $this->renderTag(
+                'p',
+                ['class' => 'faq-q'],
+                $this->renderText(
+                    'Is there an API available?'
+                )
+            ),
+            $this->renderTag(
+                'p',
+                ['class' => 'faq-a'],
+                $this->renderText(
+                    'No, not from us, but all our data is sourced from api.2b2t.dev.'
+                )
+            ),
+            $this->renderTag(
+                'p',
+                ['class' => 'faq-q'],
+                $this->renderText(
+                    'I want to remove my profile from 2b2tladder.'
+                )
+            ),
+            $this->renderTag(
+                'p',
+                ['class' => 'faq-a'],
+                $this->renderText(
+                    'This is currently impossible.'
                 )
             )
         );
@@ -600,6 +746,59 @@ class HtmlRenderer
             )
         );
 
+        $links[] = $this->renderTag(
+            "li",
+            [
+                "class" => "menu-item"
+            ],
+            $this->renderTag(
+                "a",
+                [
+                    "class" => "dropdown menu-link",
+                    "href" => "#"
+                ],
+                $this->renderText(
+                    "More"
+                ),
+                $this->renderTag(
+                    "span",
+                    ["class" => "dropdown-icon fas fa-sort-down"]
+                )
+            ),
+            $this->renderTag(
+                "div",
+                [
+                    "class" => "dropdown-menu"
+                ],
+                $this->renderTag(
+                    'ul',
+                    [],
+                    $this->renderTag(
+                        'li',
+                        [],
+                        $this->renderTag(
+                            'a',
+                            ['class' => 'dropdown-link', 'href' => '/more/faq'],
+                            $this->renderText(
+                                'FAQ'
+                            )
+                        )
+                    ),
+                    $this->renderTag(
+                        'li',
+                        [],
+                        $this->renderTag(
+                            'a',
+                            ['class' => 'dropdown-link', 'href' => '/more/discord'],
+                            $this->renderText(
+                                'Discord'
+                            )
+                        )
+                    )
+                )
+            )
+        );
+
         return $links;
     }
 
@@ -622,6 +821,11 @@ class HtmlRenderer
         );
     }
 
+    /**
+     * @param $link
+     * @param null $active
+     * @return string
+     */
     private function getMenuLinkClasses($link, $active = null)
     {
         if($link === $active) {

@@ -504,3 +504,37 @@ body {
     width: 128px;
 }
 
+.container h1 {
+    margin: 0;
+}
+
+.faq h1 {
+    margin-bottom: 20px;
+}
+
+.faq p {
+    margin: 0;
+}
+
+.faq-q {
+    font-weight: bold;
+}
+
+.faq-a {
+    font-style: italic;
+    margin-bottom: 20px !important;
+}
+
+.faq-a:last-child {
+    margin-bottom: 0 !important;
+}
+
+.footer-link {
+    color: #c3c3c3;
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    color: inherit;
+}
+

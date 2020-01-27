@@ -204,7 +204,7 @@ class SearchHandler
     private function performSearch($search_term) {
         // TODO: Improve search
 
-        $statement = $this->database->getConnection()->prepare("SELECT uuid, username FROM " . DatabaseHandler::USER_CACHE_TABLE . " WHERE `username` LIKE ? OR `uuid` = ? OR `uuid` = ? LIMIT " . self::SEARCH_LIMIT);
+        $statement = $this->database->getConnection()->prepare("SELECT uuid, username FROM " . DatabaseHandler::USER_CACHE_TABLE . " WHERE `username` LIKE ? OR `uuid` = ? OR `uuid` = ? ORDER BY `joins` DESC, `kills` DESC, `deaths` DESC, `leaves` DESC LIMIT " . self::SEARCH_LIMIT . "");
         $statement->execute([
             '%' . $search_term . '%',
             $search_term,

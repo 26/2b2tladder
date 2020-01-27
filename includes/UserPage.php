@@ -145,7 +145,7 @@ class UserPage
         }
 
         $this->html_renderer->outputPage(
-            "2b2t Ladder • $this->username",
+            "2b2tladder • $this->username",
             $this->html_renderer->renderHeader(),
             $this->html_renderer->renderWrapper(
                 $this->html_renderer->renderTag(
@@ -184,7 +184,7 @@ class UserPage
                                 'p',
                                 [],
                                 $this->html_renderer->renderText(
-                                    "Last refreshed " . floor($this->time_cached / 60) . " minutes ago."
+                                    "Last updated " . floor($this->time_cached / 60) . " minutes ago"
                                 )
                             )
                         )
@@ -308,6 +308,24 @@ class UserPage
                         'td',
                         [],
                         $this->html_renderer->renderText(
+                            'Best Rank'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$this->rank_handler->getBestRank(RankHandler::KILLS_RANK_TYPE)
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
                             'K/D ratio'
                         )
                     ),
@@ -390,6 +408,24 @@ class UserPage
                         'td',
                         [],
                         $this->html_renderer->renderText(
+                            'Best Rank'
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$this->rank_handler->getBestRank(RankHandler::DEATHS_RANK_TYPE)
+                        )
+                    )
+                ),
+                $this->html_renderer->renderTag(
+                    'tr',
+                    [],
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
                             'Last death'
                         )
                     ),
@@ -409,8 +445,8 @@ class UserPage
      */
     public function renderKDRatio() {
         if($this->user_result->getResult()->getDeaths() === 0) {
-            return $this->html_renderer->renderText(
-                'N/A'
+            return $this->html_renderer->renderInlineError(
+                'Not available'
             );
         }
 

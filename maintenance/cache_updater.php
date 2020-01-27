@@ -16,7 +16,7 @@ $time = time();
 foreach($array as $item) {
     if(!$item['uuid']) continue;
 
-    $con->prepare("DELETE FROM " . DatabaseHandler::USER_CACHE_TABLE . " VALUES (?)")->execute([$item['id']]);
+    $con->prepare("DELETE FROM " . DatabaseHandler::USER_CACHE_TABLE . " WHERE `id` = ?")->execute([$item['id']]);
     $con->prepare("INSERT INTO " . DatabaseHandler::USER_CACHE_TABLE . " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")->execute([
         $item['id'],
         $item['username'],

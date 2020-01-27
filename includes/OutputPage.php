@@ -195,6 +195,8 @@ class OutputPage
         $current_online = $result->getResult()->getNow();
         $current_max = $result->getResult()->getMax();
 
+        $users_cached = (new RankHandler())->getTotalRecords();
+
         return $this->html_renderer->renderTag(
             'div',
             ['class' => 'stats'],
@@ -217,6 +219,13 @@ class OutputPage
                         $this->html_renderer->renderText(
                             (string)$current_max
                         )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            (string)$users_cached
+                        )
                     )
                 ),
                 $this->html_renderer->renderTag(
@@ -234,6 +243,13 @@ class OutputPage
                         [],
                         $this->html_renderer->renderText(
                             "Maximum online"
+                        )
+                    ),
+                    $this->html_renderer->renderTag(
+                        'td',
+                        [],
+                        $this->html_renderer->renderText(
+                            "Users cached"
                         )
                     )
                 )

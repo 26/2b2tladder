@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2c1d3c36-65c2-485a-959f-1dd1d5052a49" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/CacheHandler.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/CacheHandler.php" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution>
+      <executable />
+    </execution>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="MERGE" />
+  </component>
+  <component name="ProjectId" id="1Why0yNUBlUiSo9o7VUUedmYWHX" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/images" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/images" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/maintenance" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2c1d3c36-65c2-485a-959f-1dd1d5052a49" name="Default Changelist" comment="" />
+      <created>1579615901890</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1579615901890</updated>
+      <workItem from="1579615903187" duration="15380000" />
+      <workItem from="1579708262728" duration="8464000" />
+      <workItem from="1579802437787" duration="18387000" />
+      <workItem from="1579889527426" duration="15113000" />
+      <workItem from="1579963509898" duration="194000" />
+      <workItem from="1579963971180" duration="7958000" />
+      <workItem from="1579973686015" duration="180000" />
+      <workItem from="1579977828383" duration="3519000" />
+      <workItem from="1580044871622" duration="6300000" />
+      <workItem from="1580052679194" duration="9739000" />
+      <workItem from="1580066876004" duration="8342000" />
+      <workItem from="1580133354191" duration="6636000" />
+    </task>
+    <task id="LOCAL-00001" summary="Implemented basis of HTML rendering pipeline">
+      <created>1579718694763</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1579718694763</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Started working on the homepage and implemented small part LeaderboardHandler">
+      <created>1579809285449</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1579809285449</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Further work on LeaderboardHandler, delegated some access to DatabaseHandler">
+      <created>1579815748773</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1579815748773</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Mainly finished homepage and LeaderboardHandler">
+      <created>1579897760491</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1579897760491</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Finished home page and leaderboards, worked on SearchHandler">
+      <created>1579973659520</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1579973659520</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Add libraries and images">
+      <created>1579973852532</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1579973852532</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Minor fixes, worked on the PlayerRenderer">
+      <created>1579981319768</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1579981319768</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Worked on player renderer, rank handler, user page. Did some minor fixes.">
+      <created>1580063535342</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1580063535342</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Added footer, mainly finished UserPage&#10;&#10;I might add graphs and &quot;all-time best rank&quot; to the UserPage later.">
+      <created>1580079265997</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1580079265997</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Added error messages, updated footer, added &quot;Best Rank&quot;">
+      <created>1580136743478</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1580136743479</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Fix SQL statement">
+      <created>1580138905080</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1580138905080</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Add more FAQ">
+      <created>1580140092522</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1580140092522</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Add favicon and missing images">
+      <created>1580140296492</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1580140296492</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Remove &quot;Leaderboard&quot; suffix from page title">
+      <created>1580140526059</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1580140526059</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Remove $table to $output_page">
+      <created>1580140561967</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1580140561967</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Have the last updated message show &quot;Just now&quot; if it was updated less than three minutes ago">
+      <created>1580145153339</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1580145153339</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Update FAQ">
+      <created>1580145166547</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1580145166547</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Add extra break">
+      <created>1580145294567</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1580145294567</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Forgot minutes">
+      <created>1580145347463</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1580145347463</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Implemented basis of HTML rendering pipeline" />
+    <MESSAGE value="Started working on the homepage and implemented small part LeaderboardHandler" />
+    <MESSAGE value="Further work on LeaderboardHandler, delegated some access to DatabaseHandler" />
+    <MESSAGE value="Mainly finished homepage and LeaderboardHandler" />
+    <MESSAGE value="Finished home page and leaderboards, worked on SearchHandler" />
+    <MESSAGE value="Add libraries and images" />
+    <MESSAGE value="Minor fixes, worked on the PlayerRenderer" />
+    <MESSAGE value="Worked on player renderer, rank handler, user page. Did some minor fixes." />
+    <MESSAGE value="Added footer, mainly finished UserPage&#10;&#10;I might add graphs and &quot;all-time best rank&quot; to the UserPage later." />
+    <MESSAGE value="Added error messages, updated footer, added &quot;Best Rank&quot;" />
+    <MESSAGE value="Fix SQL statement" />
+    <MESSAGE value="Add more FAQ" />
+    <MESSAGE value="Add favicon and missing images" />
+    <MESSAGE value="Remove &quot;Leaderboard&quot; suffix from page title" />
+    <MESSAGE value="Remove $table to $output_page" />
+    <MESSAGE value="Have the last updated message show &quot;Just now&quot; if it was updated less than three minutes ago" />
+    <MESSAGE value="Update FAQ" />
+    <MESSAGE value="Add extra break" />
+    <MESSAGE value="Forgot minutes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Forgot minutes" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="391" y="197" width="476" height="693" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1579635209964">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="391" y="197" width="476" height="693" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.20.2560.1060@0.20.2560.1060" timestamp="1579635209964" />
+    <state x="1326" y="213" width="805" height="796" key="CommitChangelistDialog2" timestamp="1580145347367">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="1326" y="213" width="805" height="796" key="CommitChangelistDialog2/0.20.2560.1060@0.20.2560.1060" timestamp="1580145347367" />
+    <state x="1784" y="449" key="Github.ShareDialog" timestamp="1579640092093">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="1784" y="449" key="Github.ShareDialog/0.20.2560.1060@0.20.2560.1060" timestamp="1579640092093" />
+    <state x="1752" y="259" width="326" height="574" key="Github.UntrackedFilesDialog" timestamp="1579640101512">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="1752" y="259" width="326" height="574" key="Github.UntrackedFilesDialog/0.20.2560.1060@0.20.2560.1060" timestamp="1579640101512" />
+    <state x="415" y="368" width="438" height="356" key="NewPhpClassDialog" timestamp="1580062367967">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="415" y="368" width="438" height="356" key="NewPhpClassDialog/0.20.2560.1060@0.20.2560.1060" timestamp="1580062367967" />
+    <state x="456" y="476" width="356" height="147" key="NewPhpFileDialog" timestamp="1579979698059">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="456" y="476" width="356" height="147" key="NewPhpFileDialog/0.20.2560.1060@0.20.2560.1060" timestamp="1579979698059" />
+    <state x="234" y="285" width="800" height="522" key="Vcs.Push.Dialog.v2" timestamp="1580145360275">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="234" y="285" width="800" height="522" key="Vcs.Push.Dialog.v2/0.20.2560.1060@0.20.2560.1060" timestamp="1580145360275" />
+    <state x="395" y="361" key="com.intellij.ide.util.TipDialog" timestamp="1580133354755">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="395" y="361" key="com.intellij.ide.util.TipDialog/0.20.2560.1060@0.20.2560.1060" timestamp="1580133354755" />
+    <state x="1067" y="469" width="415" height="154" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1579708270878">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="1067" y="469" width="415" height="154" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.20.2560.1060@0.20.2560.1060" timestamp="1579708270878" />
+    <state x="314" y="108" width="945" height="1021" key="dock-window-1" timestamp="1580133398407">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="314" y="108" width="945" height="1021" key="dock-window-1/0.20.2560.1060@0.20.2560.1060" timestamp="1580133398407" />
+    <state x="0" y="20" width="991" height="1021" key="dock-window-2" timestamp="1579635955587">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="0" y="20" width="991" height="1021" key="dock-window-2/0.20.2560.1060@0.20.2560.1060" timestamp="1579635955587" />
+    <state x="0" y="20" width="991" height="1021" key="dock-window-3" timestamp="1579638964920">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="0" y="20" width="991" height="1021" key="dock-window-3/0.20.2560.1060@0.20.2560.1060" timestamp="1579638964920" />
+    <state x="1583" y="253" width="672" height="678" key="search.everywhere.popup" timestamp="1580131332085">
+      <screen x="0" y="20" width="2560" height="1060" />
+    </state>
+    <state x="1583" y="253" width="672" height="678" key="search.everywhere.popup/0.20.2560.1060@0.20.2560.1060" timestamp="1580131332085" />
+  </component>
+</project>

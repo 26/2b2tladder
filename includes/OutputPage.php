@@ -65,7 +65,7 @@ class OutputPage
                 case '':
                 case 'home':
                     $this->html_renderer->outputPage(
-                        "2b2tladder • Leaderboard",
+                        "2b2tladder",
                         $this->html_renderer->renderHeader("home"),
                         $this->html_renderer->renderHomePage(
                             $this->html_renderer->renderHomePageSearch(),

@@ -277,14 +277,31 @@ class HtmlRenderer
                     'p',
                     [],
                     $this->renderText(
-                        'Icons by Icons8 • Data from api.2b2t.dev'
+                        'Icons by Icons8 - Data from '
+                    ),
+                    $this->renderTag(
+                        'a',
+                        ['href' => 'http://2b2t.dev', 'class' => 'footer-link'],
+                        $this->renderText(
+                            'api.2b2t.dev'
+                        )
+                    ),
+                    $this->renderText(
+                        ' - Background image by '
+                    ),
+                    $this->renderTag(
+                        'a',
+                        ['href' => 'https://www.reddit.com/r/2b2t/comments/dbmpda/a_highquality_picture_of_the_bedrock_comet_ziggy/', 'class' => 'footer-link'],
+                        $this->renderText(
+                            'u/Raviable'
+                        )
                     )
                 ),
                 $this->renderTag(
                     'p',
                     [],
                     $this->renderText(
-                        '© 2020 - Site by Marijn - '
+                        '© 2020 - '
                     ),
                     $this->renderTag(
                         'a',

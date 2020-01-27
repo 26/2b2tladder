@@ -642,6 +642,20 @@ class HtmlRenderer
                 $this->renderText(
                     'This is currently impossible.'
                 )
+            ),
+            $this->renderTag(
+                'p',
+                ['class' => 'faq-q'],
+                $this->renderText(
+                    'I found an issue. Where can I report it?'
+                )
+            ),
+            $this->renderTag(
+                'p',
+                ['class' => 'faq-a'],
+                $this->renderText(
+                    'Please join our Discord server and mention @developer! :)'
+                )
             )
         );
     }

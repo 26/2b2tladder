@@ -121,7 +121,7 @@ class OutputPage
                             $leaderboard = LeaderboardHandler::LEADERBOARD_MOST_LEAVES;
                             break;
                         default:
-                            $this->renderError(404, "Page not found.");
+                            $this->renderError(404, "Page not found");
                             return;
                     }
 

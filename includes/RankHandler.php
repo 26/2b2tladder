@@ -27,11 +27,6 @@ class RankHandler {
      */
     private $user_result;
 
-    /**
-     * @var DatabaseHandler
-     */
-    private $database;
-
     public function __construct() {
         $this->database_handler = DatabaseHandler::newFromConfig();
     }
@@ -41,8 +36,6 @@ class RankHandler {
      */
     public function loadRanksFrom(Result $user_result) {
         $this->user_result = $user_result;
-
-        $this->database = DatabaseHandler::newFromConfig();
         $this->num_of_records = $this->getTotalRecords();
 
         $this->kills_rank = $this->getKillsRank();
@@ -77,7 +70,7 @@ class RankHandler {
             throw new InvalidArgumentException("Type is not a valid constant");
         }
 
-        $statement = $this->database->getConnection()->prepare("SELECT MAX(`rank`) AS maximum FROM " . DatabaseHandler::RANKS_TABLE . " WHERE `uuid` = ? AND `type` = ?");
+        $statement = $this->database_handler->getConnection()->prepare("SELECT MAX(`rank`) AS maximum FROM " . DatabaseHandler::RANKS_TABLE . " WHERE `uuid` = ? AND `type` = ?");
         $statement->execute([$this->user_result->getUUID(), $type]);
 
         return $statement->fetch()['maximum'];
@@ -151,7 +144,7 @@ class RankHandler {
 
         // TODO: Only store ranks when API cache expires
 
-        $statement = $this->database->getConnection()->prepare(
+        $statement = $this->database_handler->getConnection()->prepare(
             "INSERT INTO `" . DatabaseHandler::RANKS_TABLE . "` (" .
                 "`type`," .
                 "`rank`," .

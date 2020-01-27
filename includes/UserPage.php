@@ -126,15 +126,6 @@ class UserPage
      * @throws Exception
      */
     public function render() {
-        if($this->legacy_username) {
-            // There is currently an issue with processing usernames containing a '_'.
-            OutputPage::renderError(
-                500,
-                "Unsupported username",
-                "The external API we are using to fetch our data currently does not support usernames with an underscore in them. This should get resolved soon."
-            );
-        }
-
         if(!$this->user_exists) {
             // Page was not loaded or user does not exist.
             OutputPage::renderError(
@@ -683,12 +674,6 @@ class UserPage
      * @throws Exception
      */
     private function loadExternalData($username) {
-        if(strpos($username, '_') !== false) {
-            $this->legacy_username = true;
-
-            return false;
-        }
-
         $user_query = new ApiQuery('https://api.2b2t.dev/', 'stats', ['username' => $username], 'username');
         $lastkill_query = new ApiQuery('https://api.2b2t.dev/', 'stats', ['lastkill' => $username], 'lastkill');
         $lastdeath_query = new ApiQuery('https://api.2b2t.dev/', 'stats', ['lastdeath' => $username], 'lastdeath');

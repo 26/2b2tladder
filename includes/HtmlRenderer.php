@@ -654,7 +654,14 @@ class HtmlRenderer
                 'p',
                 ['class' => 'faq-a'],
                 $this->renderText(
-                    'Please join our Discord server and mention @developer! :)'
+                    'Please join our Discord server and mention @developer.'
+                ),
+                $this->renderTag(
+                    'br',
+                    []
+                ),
+                $this->renderText(
+                    'If you have found a security issue, please contact @Marijn#6399 privately. I offer a $5,- reward for any security bug that is responsibly disclosed to me.'
                 )
             )
         );

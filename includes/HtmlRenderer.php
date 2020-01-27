@@ -660,6 +660,10 @@ class HtmlRenderer
                     'br',
                     []
                 ),
+                $this->renderTag(
+                    'br',
+                    []
+                ),
                 $this->renderText(
                     'If you have found a security issue, please contact @Marijn#6399 privately. I offer a $5,- reward for any security bug that is responsibly disclosed to me.'
                 )

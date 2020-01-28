@@ -4,6 +4,7 @@ if(!isset($argv[1]) || $argv[1] !== "--run") die();
 
 require __DIR__ . '/../includes/DatabaseHandler.php';
 require __DIR__ . '/../includes/CacheHandler.php';
+require __DIR__ . '/../includes/StatisticsHandler.php';
 
 $db = DatabaseHandler::newFromConfig();
 
@@ -31,6 +32,13 @@ foreach($array as $item) {
         'username=' . $item['username'],
         $time
     ]);
+
+    $statistics_handler = new StatisticsHandler();
+
+    $statistics_handler->storeRecord(StatisticsHandler::KILLS_RANK_TYPE, $item['kills'], $item['uuid']);
+    $statistics_handler->storeRecord(StatisticsHandler::DEATHS_RANK_TYPE, $item['deaths'], $item['uuid']);
+    $statistics_handler->storeRecord(StatisticsHandler::JOINS_RANK_TYPE, $item['joins'], $item['uuid']);
+    $statistics_handler->storeRecord(StatisticsHandler::LEAVES_RANK_TYPE, $item['leaves'], $item['uuid']);
 
     echo "Saving " . $item['username'] . "\n";
 }

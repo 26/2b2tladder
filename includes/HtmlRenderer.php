@@ -666,14 +666,14 @@ class HtmlRenderer
                 'p',
                 ['class' => 'faq-q'],
                 $this->renderText(
-                    'Why are the statistics shown here less than those shown in Minecraft?'
+                    'Why is the data shown here inaccurate?'
                 )
             ),
             $this->renderTag(
                 'p',
                 ['class' => 'faq-a'],
                 $this->renderText(
-                    'Our data is sourced by a bot. This bot can only source data when it it online, therefore, no data was recorded before the bot existed or while the bot is in queue.'
+                    'Our data is sourced by a bot. This bot can only source data when it it online, therefore, no data was recorded before the bot existed and no data is recorded while the bot is in queue.'
                 )
             ),
             $this->renderTag(

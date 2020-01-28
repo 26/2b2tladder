@@ -47,10 +47,6 @@ class RankHandler {
         $this->deaths_rank_percentage = $this->calculatePercentage($this->deaths_rank);
         $this->joins_rank_percentage = $this->calculatePercentage($this->joins_rank);
         $this->leaves_rank_percentage = $this->calculatePercentage($this->leaves_rank);
-
-        try {
-            $this->storeRanks();
-        } catch(Exception $e) {}
     }
 
     /**
@@ -124,17 +120,9 @@ class RankHandler {
     }
 
     /**
-     * @param $rank
-     * @return float
-     */
-    private function calculatePercentage($rank) {
-        return $rank / $this->num_of_records;
-    }
-
-    /**
      * Stores the calculated ranks.
      */
-    private function storeRanks() {
+    public function storeRanks() {
         if(!$this->user_result) {
             throw new LogicException("Tried accessing rank data before loading user");
         }
@@ -146,10 +134,10 @@ class RankHandler {
 
         $statement = $this->database_handler->getConnection()->prepare(
             "INSERT INTO `" . DatabaseHandler::RANKS_TABLE . "` (" .
-                "`type`," .
-                "`rank`," .
-                "`uuid`," .
-                "`time`" .
+            "`type`," .
+            "`rank`," .
+            "`uuid`," .
+            "`time`" .
             ") VALUES " .
             "('" . self::KILLS_RANK_TYPE  . "', ?, ?, $time)," .
             "('" . self::DEATHS_RANK_TYPE . "', ?, ?, $time)," .
@@ -165,5 +153,13 @@ class RankHandler {
                 $this->leaves_rank, $uuid
             ]
         );
+    }
+
+    /**
+     * @param $rank
+     * @return float
+     */
+    private function calculatePercentage($rank) {
+        return $rank / $this->num_of_records;
     }
 }

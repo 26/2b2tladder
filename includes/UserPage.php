@@ -119,6 +119,17 @@ class UserPage
 
         $this->rank_handler->loadRanksFrom($this->user_result->getResult());
 
+        try {
+            $this->rank_handler->storeRanks();
+        } catch(Exception $e) {}
+
+        $statistics_handler = new StatisticsHandler();
+
+        $statistics_handler->storeRecord(StatisticsHandler::KILLS_RANK_TYPE, $this->user_result->getResult()->getKills(), $this->user_result->getResult()->getUUID());
+        $statistics_handler->storeRecord(StatisticsHandler::DEATHS_RANK_TYPE, $this->user_result->getResult()->getDeaths(), $this->user_result->getResult()->getUUID());
+        $statistics_handler->storeRecord(StatisticsHandler::JOINS_RANK_TYPE, $this->user_result->getResult()->getJoins(), $this->user_result->getResult()->getUUID());
+        $statistics_handler->storeRecord(StatisticsHandler::LEAVES_RANK_TYPE, $this->user_result->getResult()->getLeaves(), $this->user_result->getResult()->getUUID());
+
         return $this;
     }
 

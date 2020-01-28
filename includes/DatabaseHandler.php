@@ -21,7 +21,7 @@ class DatabaseHandler
     /**
      * @var bool Set to true create non-existent tables.
      */
-    private $REBUILD_TABLES = true;
+    private $REBUILD_TABLES = false;
 
     /**
      * Connect to the database.

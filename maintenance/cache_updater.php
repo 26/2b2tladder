@@ -14,6 +14,8 @@ $array = json_decode($result, true);
 $con = $db->getConnection();
 $time = time();
 
+$statistics_handler = new StatisticsHandler();
+
 foreach($array as $item) {
     if(!$item['uuid']) continue;
 
@@ -32,8 +34,6 @@ foreach($array as $item) {
         'username=' . $item['username'],
         $time
     ]);
-
-    $statistics_handler = new StatisticsHandler();
 
     $statistics_handler->storeRecord(StatisticsHandler::KILLS_RANK_TYPE, $item['kills'], $item['uuid']);
     $statistics_handler->storeRecord(StatisticsHandler::DEATHS_RANK_TYPE, $item['deaths'], $item['uuid']);

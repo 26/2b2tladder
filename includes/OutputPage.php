@@ -2,7 +2,7 @@
 
 class OutputPage
 {
-    const DEBUG = false;
+    const DEBUG = true;
 
     /**
      * @var CacheHandler

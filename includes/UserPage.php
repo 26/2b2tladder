@@ -79,6 +79,26 @@ class UserPage
     private $time_cached;
 
     /**
+     * @var Tag
+     */
+    private $leaves_chart;
+
+    /**
+     * @var Tag
+     */
+    private $joins_chart;
+
+    /**
+     * @var Tag
+     */
+    private $deaths_chart;
+
+    /**
+     * @var Tag
+     */
+    private $kills_chart;
+
+    /**
      * UserPage constructor.
      */
     public function __construct() {
@@ -130,6 +150,28 @@ class UserPage
         $statistics_handler->storeRecord(StatisticsHandler::JOINS_RANK_TYPE, $this->user_result->getResult()->getJoins(), $this->user_result->getResult()->getUUID());
         $statistics_handler->storeRecord(StatisticsHandler::LEAVES_RANK_TYPE, $this->user_result->getResult()->getLeaves(), $this->user_result->getResult()->getUUID());
 
+        $chart_factory = new ChartFactory();
+
+        $this->kills_chart = $chart_factory->drawChart(
+            "Kills",
+            $this->getStatisticsHistory($this->user_result->getResult()->getUUID(), StatisticsHandler::KILLS_RANK_TYPE)
+        );
+
+        $this->deaths_chart = $chart_factory->drawChart(
+            "Deaths",
+            $this->getStatisticsHistory($this->user_result->getResult()->getUUID(), StatisticsHandler::DEATHS_RANK_TYPE)
+        );
+
+        $this->joins_chart = $chart_factory->drawChart(
+            "Joins",
+            $this->getStatisticsHistory($this->user_result->getResult()->getUUID(), StatisticsHandler::JOINS_RANK_TYPE)
+        );
+
+        $this->leaves_chart = $chart_factory->drawChart(
+            "Leaves",
+            $this->getStatisticsHistory($this->user_result->getResult()->getUUID(), StatisticsHandler::LEAVES_RANK_TYPE)
+        );
+
         return $this;
     }
 
@@ -145,6 +187,8 @@ class UserPage
                 "The user you are looking for was not found. This could mean you misspelled their name, they haven't joined in a while or their username changed."
             );
         }
+
+        $chart = new ChartFactory();
 
         $this->html_renderer->outputPage(
             "2b2tladder • $this->username",
@@ -248,6 +292,11 @@ class UserPage
                                     )
                                 ),
                                 $this->renderJoinInfo()
+                            ),
+                            $this->html_renderer->renderTag(
+                                'div',
+                                ['class' => 'col-md box'],
+                                $this->deaths_chart
                             )
                         )
                     )
@@ -255,6 +304,7 @@ class UserPage
                 $this->html_renderer->renderFooter()
             )
         );
+
     }
 
     /**
@@ -711,5 +761,17 @@ class UserPage
 
         if($updated_minutes < 3) return "Last updated just now";
         return "Last updated $updated_minutes minutes ago";
+    }
+
+    /**
+     * @param $uuid
+     * @param $type
+     * @return array
+     */
+    private function getStatisticsHistory($uuid, $type) {
+        $statement = $this->database->getConnection()->prepare("SELECT `time`, `value` FROM " . DatabaseHandler::STATISTICS_TABLE . " WHERE `uuid` = ? AND `type` = ?");
+        $statement->execute([$uuid, $type]);
+
+        return $statement->fetchAll();
     }
 }

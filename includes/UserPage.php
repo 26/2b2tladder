@@ -144,6 +144,18 @@ class UserPage
         $lastkill_query = new ApiQuery('https://api.2b2t.dev/', 'stats', ['lastkill' => $username], 'lastkill');
         $lastdeath_query = new ApiQuery('https://api.2b2t.dev/', 'stats', ['lastdeath' => $username], 'lastdeath');
 
+
+        if(!$this->user_result = $this->cache_handler->doQuery($this->io_handler, $user_query)) {
+            return $this;
+        }
+
+        $this->time_cached = $this->cache_handler->isCachedFor($user_query);
+
+        $this->user_exists = true;
+
+        $this->last_kill_result = $this->cache_handler->doQuery($this->io_handler, $lastkill_query);
+        $this->last_death_result = $this->cache_handler->doQuery($this->io_handler, $lastdeath_query);
+
         $this->rank_handler->loadRanksFrom($this->user_result->getResult());
 
         if(!$this->cache_handler->isCached($user_query)) {
@@ -159,17 +171,6 @@ class UserPage
                 $this->rank_handler->storeRanks();
             } catch(Exception $e) {}
         }
-
-        if(!$this->user_result = $this->cache_handler->doQuery($this->io_handler, $user_query)) {
-            return $this;
-        }
-
-        $this->time_cached = $this->cache_handler->isCachedFor($user_query);
-
-        $this->user_exists = true;
-
-        $this->last_kill_result = $this->cache_handler->doQuery($this->io_handler, $lastkill_query);
-        $this->last_death_result = $this->cache_handler->doQuery($this->io_handler, $lastdeath_query);
 
         $this->username = $username;
         $this->skin_render = $this->skin_renderer->getSkin($this->username);

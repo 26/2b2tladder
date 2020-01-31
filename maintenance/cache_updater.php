@@ -35,10 +35,12 @@ foreach($array as $item) {
         $time
     ]);
 
-    $statistics_handler->storeRecord(StatisticsHandler::KILLS_RANK_TYPE, $item['kills'], $item['uuid']);
-    $statistics_handler->storeRecord(StatisticsHandler::DEATHS_RANK_TYPE, $item['deaths'], $item['uuid']);
-    $statistics_handler->storeRecord(StatisticsHandler::JOINS_RANK_TYPE, $item['joins'], $item['uuid']);
-    $statistics_handler->storeRecord(StatisticsHandler::LEAVES_RANK_TYPE, $item['leaves'], $item['uuid']);
+    if(isset($argv[2]) && $argv[2] === "--nostats") {
+        $statistics_handler->storeRecord(StatisticsHandler::KILLS_RANK_TYPE, $item['kills'], $item['uuid']);
+        $statistics_handler->storeRecord(StatisticsHandler::DEATHS_RANK_TYPE, $item['deaths'], $item['uuid']);
+        $statistics_handler->storeRecord(StatisticsHandler::JOINS_RANK_TYPE, $item['joins'], $item['uuid']);
+        $statistics_handler->storeRecord(StatisticsHandler::LEAVES_RANK_TYPE, $item['leaves'], $item['uuid']);
+    }
 
     echo "Saving " . $item['username'] . "\n";
 }

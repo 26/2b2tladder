@@ -2,7 +2,7 @@
 
 class OutputPage
 {
-    const DEBUG = true;
+    const DEBUG = false;
 
     /**
      * @var CacheHandler
@@ -142,6 +142,10 @@ class OutputPage
 
                     return;
                 case 'profile':
+                    if($parameter === "all") {
+                        $this->renderError(500, "Invalid profile name", "This profile name is not supported because it has special meaning.");
+                    }
+
                     if(!isset($parameter)) {
                         $this->renderError(400, "Invalid profile name", "The profile name must not be empty.");
                     }

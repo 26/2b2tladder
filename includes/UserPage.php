@@ -140,6 +140,8 @@ class UserPage
             throw new InvalidArgumentException("Username must be of type string.");
         }
 
+        // TODO: Split into functions that make sense...
+
         $user_query = new ApiQuery('https://api.2b2t.dev/', 'stats', ['username' => $username], 'username');
         $lastkill_query = new ApiQuery('https://api.2b2t.dev/', 'stats', ['lastkill' => $username], 'lastkill');
         $lastdeath_query = new ApiQuery('https://api.2b2t.dev/', 'stats', ['lastdeath' => $username], 'lastdeath');

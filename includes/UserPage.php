@@ -99,6 +99,26 @@ class UserPage
     private $kills_chart;
 
     /**
+     * @var Tag
+     */
+    private $rank_kills_chart;
+
+    /**
+     * @var Tag
+     */
+    private $rank_deaths_chart;
+
+    /**
+     * @var Tag
+     */
+    private $rank_joins_chart;
+
+    /**
+     * @var Tag
+     */
+    private $rank_leaves_chart;
+
+    /**
      * UserPage constructor.
      */
     public function __construct() {
@@ -133,6 +153,13 @@ class UserPage
 
             $this->cache_handler->clearCacheSkin($this->user_result->getResult()->getUUID());
             $this->cache_handler->cacheSkin($this->user_result->getResult()->getUUID(), $this->skin_icon_base64);
+
+            $statistics_handler = new StatisticsHandler();
+
+            $statistics_handler->storeRecord(StatisticsHandler::KILLS_RANK_TYPE, $this->user_result->getResult()->getKills(), $this->user_result->getResult()->getUUID());
+            $statistics_handler->storeRecord(StatisticsHandler::DEATHS_RANK_TYPE, $this->user_result->getResult()->getDeaths(), $this->user_result->getResult()->getUUID());
+            $statistics_handler->storeRecord(StatisticsHandler::JOINS_RANK_TYPE, $this->user_result->getResult()->getJoins(), $this->user_result->getResult()->getUUID());
+            $statistics_handler->storeRecord(StatisticsHandler::LEAVES_RANK_TYPE, $this->user_result->getResult()->getLeaves(), $this->user_result->getResult()->getUUID());
         } else {
             $this->skin_icon_base64 = $this->cache_handler->getCachedSkin($this->user_result->getResult()->getUUID())['skin'];
         }
@@ -143,32 +170,25 @@ class UserPage
             $this->rank_handler->storeRanks();
         } catch(Exception $e) {}
 
-        $statistics_handler = new StatisticsHandler();
-
-        $statistics_handler->storeRecord(StatisticsHandler::KILLS_RANK_TYPE, $this->user_result->getResult()->getKills(), $this->user_result->getResult()->getUUID());
-        $statistics_handler->storeRecord(StatisticsHandler::DEATHS_RANK_TYPE, $this->user_result->getResult()->getDeaths(), $this->user_result->getResult()->getUUID());
-        $statistics_handler->storeRecord(StatisticsHandler::JOINS_RANK_TYPE, $this->user_result->getResult()->getJoins(), $this->user_result->getResult()->getUUID());
-        $statistics_handler->storeRecord(StatisticsHandler::LEAVES_RANK_TYPE, $this->user_result->getResult()->getLeaves(), $this->user_result->getResult()->getUUID());
-
         $chart_factory = new ChartFactory();
 
         $this->kills_chart = $chart_factory->drawChart(
-            "Kills",
+            "kills",
             $this->getStatisticsHistory($this->user_result->getResult()->getUUID(), StatisticsHandler::KILLS_RANK_TYPE)
         );
 
         $this->deaths_chart = $chart_factory->drawChart(
-            "Deaths",
+            "deaths",
             $this->getStatisticsHistory($this->user_result->getResult()->getUUID(), StatisticsHandler::DEATHS_RANK_TYPE)
         );
 
         $this->joins_chart = $chart_factory->drawChart(
-            "Joins",
+            "joins",
             $this->getStatisticsHistory($this->user_result->getResult()->getUUID(), StatisticsHandler::JOINS_RANK_TYPE)
         );
 
         $this->leaves_chart = $chart_factory->drawChart(
-            "Leaves",
+            "leaves",
             $this->getStatisticsHistory($this->user_result->getResult()->getUUID(), StatisticsHandler::LEAVES_RANK_TYPE)
         );
 
@@ -292,11 +312,66 @@ class UserPage
                                     )
                                 ),
                                 $this->renderJoinInfo()
-                            ),
+                            )
+                        ),
+                        $this->html_renderer->renderTag(
+                            'div',
+                            ['class' => 'row'],
                             $this->html_renderer->renderTag(
                                 'div',
-                                ['class' => 'col-md box'],
-                                $this->deaths_chart
+                                ['class' => 'col-md box tab-container'],
+                                $this->html_renderer->renderTag(
+                                    'div',
+                                    ['class' => 'tab'],
+                                    $this->html_renderer->renderTag(
+                                        'button',
+                                        ['class' => 'tablink active', 'onclick' => 'openTab(event, \'kills-chart\')'],
+                                        $this->html_renderer->renderText(
+                                            "Total kills"
+                                        )
+                                    ),
+                                    $this->html_renderer->renderTag(
+                                        'button',
+                                        ['class' => 'tablink', 'onclick' => 'openTab(event, \'deaths-chart\')'],
+                                        $this->html_renderer->renderText(
+                                            "Total deaths"
+                                        )
+                                    ),
+                                    $this->html_renderer->renderTag(
+                                        'button',
+                                        ['class' => 'tablink', 'onclick' => 'openTab(event, \'joins-chart\')'],
+                                        $this->html_renderer->renderText(
+                                            "Total joins"
+                                        )
+                                    ),
+                                    $this->html_renderer->renderTag(
+                                        'button',
+                                        ['class' => 'tablink', 'onclick' => 'openTab(event, \'leaves-chart\')'],
+                                        $this->html_renderer->renderText(
+                                            "Total leaves"
+                                        )
+                                    )
+                                ),
+                                $this->html_renderer->renderTag(
+                                    'div',
+                                    ['class' => 'tab-content', 'id' => 'kills-chart'],
+                                    $this->kills_chart
+                                ),
+                                $this->html_renderer->renderTag(
+                                    'div',
+                                    ['class' => 'tab-content', 'id' => 'deaths-chart'],
+                                    $this->deaths_chart
+                                ),
+                                $this->html_renderer->renderTag(
+                                    'div',
+                                    ['class' => 'tab-content', 'id' => 'joins-chart'],
+                                    $this->joins_chart
+                                ),
+                                $this->html_renderer->renderTag(
+                                    'div',
+                                    ['class' => 'tab-content', 'id' => 'leaves-chart'],
+                                    $this->leaves_chart
+                                )
                             )
                         )
                     )
@@ -769,8 +844,15 @@ class UserPage
      * @return array
      */
     private function getStatisticsHistory($uuid, $type) {
-        $statement = $this->database->getConnection()->prepare("SELECT `time`, `value` FROM " . DatabaseHandler::STATISTICS_TABLE . " WHERE `uuid` = ? AND `type` = ?");
+        $statement = $this->database->getConnection()->prepare("SELECT `time`, `value` FROM " . DatabaseHandler::STATISTICS_TABLE . " WHERE `uuid` = ? AND `type` = ? ORDER BY `time`");
         $statement->execute([$uuid, $type]);
+
+        return $statement->fetchAll();
+    }
+
+    private function getRankHistory($uuid, $rank) {
+        $statement = $this->database->getConnection()->prepare("SELECT `time`, `rank` FROM " . DatabaseHandler::RANKS_TABLE . " WHERE `uuid` = ? AND `type` = ? ORDER BY `time`");
+        $statement->execute([$uuid, $rank]);
 
         return $statement->fetchAll();
     }

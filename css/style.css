@@ -415,7 +415,7 @@ body {
 .row {
     display: flex;
     flex-wrap: nowrap;
-    margin: 8px 0;
+    margin: 15px 0;
 }
 
 .row:first-child {
@@ -548,6 +548,55 @@ body {
 
 .plainlink:hover {
     color: #c3c3c3;
+}
+
+.tab {
+    overflow: hidden;
+}
+
+.tab button {
+    // TODO
+}
+
+#kills-chart {
+    display: block;
+}
+
+.tablink {
+    background: transparent;
+    border: 0;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin: 10px 15px 0 15px;
+    color: #737373;
+    padding: 0;
+}
+
+.tablink:focus {
+    outline: 0;
+    color: #b4b4b4;
+}
+
+.tablink::-moz-focus-inner {
+    border: 0;
+    color: #b4b4b4;
+}
+
+.tab {
+    margin: 0 auto;
+    display: table;
+}
+
+.active {
+    color: white !important;
+}
+
+.tab-container {
+    min-height: 266px;
+}
+
+.tab-content {
+    padding-right: 25px;
 }
 
 @media (max-width: 780px) {

@@ -2,10 +2,10 @@
 
 class ChartFactory {
     const ALLOWED_GRAPH_TYPES = [
-        "Kills",
-        "Deaths",
-        "Joins",
-        "Leaves"
+        "kills",
+        "deaths",
+        "joins",
+        "leaves"
     ];
     const CANVAS_JS_PATH = '/lib/canvasjs/canvasjs.min.js';
 
@@ -29,7 +29,7 @@ class ChartFactory {
             throw new InvalidArgumentException("Graph type is not allowed.");
         }
 
-        $graph_id = md5(rand()); // Very pseudo-random, good enough for this purpose.
+        $graph_id = md5(rand()); // Pseudo-random, good enough for this purpose.
         $javascript = $this->prepareJavascript($graph_type, $data, $graph_id);
 
         return $this->html_renderer->renderTag(
@@ -45,24 +45,13 @@ class ChartFactory {
         );
     }
 
-    /**
-     * @return Tag
-     * @throws Exception
-     */
-    public function renderLoadScriptTag() {
-        return $this->html_renderer->renderEmptyTag(
-            'script',
-            ['src' => self::CANVAS_JS_PATH]
-        );
-    }
-
     private function prepareJavascript($graph_type, $data, $graph_id) {
-        $prepared_data = ["['Date', '$graph_type']"];
+        $prepared_data = ["['Date', '" . ucfirst($graph_type) . "']"];
 
         foreach($data as $item) {
             if(!$item['time'] || !$item['value']) continue;
 
-            $date = gmdate("Y-m-d h:m:s", $item['time']);
+            $date = gmdate("Y-m-d H:i:s", $item['time']);
             $value = $item['value'];
 
             $prepared_data[] = "['$date', $value]";
@@ -88,15 +77,36 @@ class ChartFactory {
                         hAxis: {
                             gridlines: {
                                 color: '#878787'
+                            },
+                            textPosition: 'none'
+                        },
+                        vAxis: {
+                            textStyle: {
+                                color: 'white'
                             }
                         },
-                        lineWidth: 1.5,
-                        pointSize: 4
+                        color: ['white'],
+                        lineWidth: 2,
+                        pointSize: 0,
+                        width: '100%',
+                        chartArea: {
+                            left: '8%',
+                            width: '100%'
+                        },
+                        crosshair: {
+                            trigger: 'both',
+                            orientation: 'vertical',
+                            color: 'white'
+                        },
+                        colors: ['#009bff']
                     };
         
                     var chart = new google.visualization.LineChart(document.getElementById('$graph_id'));
         
                     chart.draw(data, options);
+                    
+                    // Used for tabs
+                    if('$graph_type' !== '" . self::ALLOWED_GRAPH_TYPES[0] . "') document.getElementById('$graph_type-chart').style.display = 'none';
                 }";
     }
 }

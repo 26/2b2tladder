@@ -153,12 +153,7 @@ class UserPage
 
         $this->user_exists = true;
 
-        $this->last_kill_result = $this->cache_handler->doQuery($this->io_handler, $lastkill_query);
-        $this->last_death_result = $this->cache_handler->doQuery($this->io_handler, $lastdeath_query);
-
-        $this->rank_handler->loadRanksFrom($this->user_result->getResult());
-
-        if(!$this->cache_handler->isCached($user_query)) {
+        if(!$this->cache_handler->isCached($lastdeath_query)) {
             // Update historical statistics data when cache gets refreshed.
             $statistics_handler = new StatisticsHandler();
 
@@ -171,6 +166,11 @@ class UserPage
                 $this->rank_handler->storeRanks();
             } catch(Exception $e) {}
         }
+
+        $this->last_kill_result = $this->cache_handler->doQuery($this->io_handler, $lastkill_query);
+        $this->last_death_result = $this->cache_handler->doQuery($this->io_handler, $lastdeath_query);
+
+        $this->rank_handler->loadRanksFrom($this->user_result->getResult());
 
         $this->username = $username;
         $this->skin_render = $this->skin_renderer->getSkin($this->username);

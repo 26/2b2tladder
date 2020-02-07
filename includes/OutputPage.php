@@ -172,6 +172,11 @@ class OutputPage
                             $this->renderError(404, "Page not found");
                             return;
                     }
+                case 'api':
+                    $api = new Api\ApiMain();
+                    $api->execute();
+
+                    break;
                 default:
                     $this->renderError(404, "Page not found");
             }

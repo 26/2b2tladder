@@ -473,6 +473,21 @@ class HtmlRenderer
     }
 
     /**
+     * Renders text without escaping it first.
+     *
+     * @param $text
+     * @return Tag
+     */
+    public function unsafeRenderText($text)
+    {
+        if(!is_string($text)) {
+            throw new InvalidArgumentException();
+        }
+
+        return (new Tag())->setTag($text);
+    }
+
+    /**
      * @param $tag_name
      * @param array $attributes
      * @return Tag

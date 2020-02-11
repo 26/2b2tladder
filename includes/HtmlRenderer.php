@@ -353,7 +353,7 @@ class HtmlRenderer
                     ),
                     $this->renderTag(
                         'a',
-                        ['href' => 'https://github.com/Pancake/2b2tladder', 'class' => 'footer-link'],
+                        ['href' => 'https://github.com/26/2b2tladder', 'class' => 'footer-link'],
                         $this->renderText(
                             'GitHub'
                         )
